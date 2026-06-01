@@ -1,4 +1,5 @@
 # Local Storage MCP Server
+<img width="1280" height="632" alt="my-local-storage-mcp" src="https://github.com/user-attachments/assets/cfeb0571-957a-4e4c-ae75-5f0ee3a9e121" />
 
 A pragmatic, low-overhead Model Context Protocol (MCP) server that provides Large Language Models (LLMs) with a persistent, local long-term memory. 
 

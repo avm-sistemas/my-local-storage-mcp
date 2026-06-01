@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS local_learning (
 );
 
 CREATE INDEX IF NOT EXISTS idx_learning_lookup ON local_learning(topic, keywords);
+```
 
 ---
 

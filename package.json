@@ -1,0 +1,33 @@
+{
+  "name": "my-local-storage-mcp",
+  "version": "1.0.0",
+  "description": "MCP server para armazenamento de aprendizado local",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "my-local-storage-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],  
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "storage",
+    "mcp"
+  ],
+  "license": "ISC",
+  "author": "Andre Mesquita",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.4.0"
+  }
+}

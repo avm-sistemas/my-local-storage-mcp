@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "build:pages": "node scripts/build-pages.mjs",
     "prepare": "npm run build",
     "prepublishOnly": "node --check dist/index.js"
   },
@@ -32,7 +33,7 @@
     "type": "git",
     "url": "git+https://github.com/avm-sistemas/my-local-storage-mcp.git"
   },
-  "homepage": "https://github.com/avm-sistemas/my-local-storage-mcp#readme",
+  "homepage": "https://avm-sistemas.github.io/my-local-storage-mcp/",
   "bugs": {
     "url": "https://github.com/avm-sistemas/my-local-storage-mcp/issues"
   },
@@ -46,6 +47,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
+    "marked": "^15.0.7",
     "tsx": "^4.19.0",
     "typescript": "^5.4.0"
   }

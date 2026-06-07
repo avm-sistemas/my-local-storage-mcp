@@ -11,10 +11,38 @@ function translateToPt(enBody) {
       `Servidor [Model Context Protocol (MCP)](https://modelcontextprotocol.io) para mem\u00f3ria persistente local. Permite que agentes (Cursor, Claude Desktop, etc.) gravem e recuperem nuances de regras de neg\u00f3cio, decis\u00f5es arquiteturais e conhecimento de dom\u00ednio ${dash} sem inflar o contexto da conversa.`)
     .replace("Built with **Node.js**, **TypeScript**, and **SQLite** \u00b7 Database:", "Constru\u00eddo com **Node.js**, **TypeScript** e **SQLite** \u00b7 Banco:")
     .replace("**Version \`1.4.1\`", "**Vers\u00e3o \`1.4.1\`")
-    .replace("GitHub README does not support native tabs. This doc uses **collapsible sections** (\`<details>\`) to keep the overview scannable",
-      "O GitHub n\u00e3o suporta abas nativas em README. Este doc usa **se\u00e7\u00f5es colaps\u00e1veis** (\`<details>\`) para manter a vis\u00e3o geral enxuta")
-    .replace("click a heading to expand.", "clique no t\u00edtulo para expandir.")
     .replace("## Quick start", "## In\u00edcio r\u00e1pido")
+    .replace("## Prompts that prioritize the MCP", "## Prompts que priorizam o MCP")
+    .replace("The agent invokes MCP tools only when the request makes the intent clear. Use explicit phrases to maximize recall and avoid missed saves:",
+      "O agente s\u00f3 chama ferramentas MCP quando o pedido deixa a inten\u00e7\u00e3o clara. Use frases expl\u00edcitas para maximizar recall e evitar grava\u00e7\u00f5es perdidas:")
+    .replace("| Moment | Example prompt | Tool |", "| Momento | Exemplo de prompt | Ferramenta |")
+    .replace("| Session start |", "| In\u00edcio da sess\u00e3o |")
+    .replace("| Domain lookup |", "| Consulta de dom\u00ednio |")
+    .replace("| Load project context |", "| Carregar contexto do projeto |")
+    .replace("| **Checkpoint save** |", "| **Checkpoint (gravar)** |")
+    .replace("`Before we start, recall anchors for topic java-legacy from my local MCP memory (compact).`",
+      "`Antes de come\u00e7ar, fa\u00e7a recall das \u00e2ncoras do t\u00f3pico java-legacy na mem\u00f3ria MCP local (compact).`")
+    .replace("`Search my local MCP memory for rules about PedidoVenda and N+1.`",
+      "`Busque na mem\u00f3ria MCP local regras sobre PedidoVenda e N+1.`")
+    .replace("`What do we already have stored in local memory about this repo?`",
+      "`O que j\u00e1 temos gravado na mem\u00f3ria local sobre este reposit\u00f3rio?`")
+    .replace("`Save this to my MCP memory " + dash + " confirmed.` / `Remember this for future sessions.`",
+      "`Grave isso na mem\u00f3ria MCP " + dash + " confirmado.` / `Lembre disso nas pr\u00f3ximas sess\u00f5es.`")
+    .replace("**Suggested routine:** compact recall at session open \u2192 work \u2192 explicit checkpoint phrase when a nuance must persist.",
+      "**Rotina sugerida:** recall compacto ao abrir a sess\u00e3o \u2192 trabalho \u2192 frase de checkpoint expl\u00edcita quando uma nuance deve persistir.")
+    .replace("> **Checkpoint (routine):** `remember_fact` is for confirmed learnings only. The agent must wait for an explicit save signal from you " + dash + " not save while exploring or brainstorming.",
+      "> **Checkpoint (rotina):** `remember_fact` \u00e9 s\u00f3 para aprendizados confirmados. O agente deve aguardar um sinal expl\u00edcito de grava\u00e7\u00e3o " + dash + " n\u00e3o gravar durante explora\u00e7\u00e3o ou brainstorming.")
+    .replace("| User says (examples) | Agent action |", "| Usu\u00e1rio diz (exemplos) | A\u00e7\u00e3o do agente |")
+    .replace("| \"Save this to my MCP memory.\" | Call `remember_fact` |",
+      "| \"Grave isso na mem\u00f3ria MCP.\" | Chamar `remember_fact` |")
+    .replace("| \"Remember this for next time.\" | Call `remember_fact` |",
+      "| \"Lembre disso na pr\u00f3xima vez.\" | Chamar `remember_fact` |")
+    .replace("| \"Yes, persist that nuance.\" | Call `remember_fact` |",
+      "| \"Sim, persista essa nuance.\" | Chamar `remember_fact` |")
+    .replace("| Vague approval during exploration | **Do not** call `remember_fact` |",
+      "| Aprova\u00e7\u00e3o vaga durante explora\u00e7\u00e3o | **N\u00e3o** chamar `remember_fact` |")
+    .replace("Without a checkpoint phrase, the learning stays in the chat and is lost when the session ends.",
+      "Sem frase de checkpoint, o aprendizado fica s\u00f3 no chat e se perde ao encerrar a sess\u00e3o.")
     .replace("**Design principles:**", "**Princ\u00edpios:**")
     .replace("Installation &amp; Cursor setup", "Instala\u00e7\u00e3o e configura\u00e7\u00e3o no Cursor")
     .replace("Or clone the repo, run", "Ou clone o reposit\u00f3rio, rode")
@@ -31,9 +59,6 @@ function translateToPt(enBody) {
     .replace("The fact, rule, or decision", "O fato, regra ou decis\u00e3o")
     .replace("(fundamental concepts) or `detail` (default)", "(conceitos fundamentais) ou `detail` (padr\u00e3o)")
     .replace("(temporary session context)", "(contexto tempor\u00e1rio)")
-    .replace("**Checkpoint:** save only when the user explicitly confirms the nuance should be persisted",
-      "**Checkpoint:** gravar somente quando o usu\u00e1rio confirmar explicitamente que a nuance deve ser persistida")
-    .replace("not during exploration.", "n\u00e3o durante explora\u00e7\u00e3o.")
     .replace(`${dash} free-text search`, `${dash} busca livre`)
     .replace("Search across", "Busca em")
     .replace("Returns up to 10 records; excludes", "Retorna no m\u00e1ximo 10 registros; exclui")
@@ -85,8 +110,6 @@ const bodyEn = `A [Model Context Protocol (MCP)](https://modelcontextprotocol.io
 
 Built with **Node.js**, **TypeScript**, and **SQLite** \u00b7 Database: \`~/.local_mcp_learning.db\` \u00b7 **Version \`1.4.1\`**
 
-> GitHub README does not support native tabs. This doc uses **collapsible sections** (\`<details>\`) to keep the overview scannable ${dash} click a heading to expand.
-
 ## Quick start
 
 \`\`\`bash
@@ -94,6 +117,19 @@ npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
 \`\`\`
 
 **Design principles:** KISS (single SQLite file) \u00b7 LLM-delegated indexing (\`topic\` + \`keywords\`) \u00b7 zero cloud cost \u00b7 on-idle compaction
+
+## Prompts that prioritize the MCP
+
+The agent invokes MCP tools only when the request makes the intent clear. Use explicit phrases to maximize recall and avoid missed saves:
+
+| Moment | Example prompt | Tool |
+|---|---|---|
+| Session start | \`Before we start, recall anchors for topic java-legacy from my local MCP memory (compact).\` | \`recall_by_topic\` |
+| Domain lookup | \`Search my local MCP memory for rules about PedidoVenda and N+1.\` | \`recall_facts\` |
+| Load project context | \`What do we already have stored in local memory about this repo?\` | \`recall_facts\` / \`recall_by_topic\` |
+| **Checkpoint save** | \`Save this to my MCP memory \u2014 confirmed.\` / \`Remember this for future sessions.\` | \`remember_fact\` |
+
+**Suggested routine:** compact recall at session open \u2192 work \u2192 explicit checkpoint phrase when a nuance must persist.
 
 <details>
 <summary><strong>Installation &amp; Cursor setup</strong></summary>
@@ -141,7 +177,16 @@ Stores a persistent learning. Deduplicates automatically via \`fact_hash\` (MD5 
 | \`record_type\` | \`anchor\` (fundamental concepts) or \`detail\` (default) |
 | \`priority\` | \`high\` (default) or \`low\` (temporary session context) |
 
-**Checkpoint:** save only when the user explicitly confirms the nuance should be persisted ${dash} not during exploration.
+> **Checkpoint (routine):** \`remember_fact\` is for confirmed learnings only. The agent must wait for an explicit save signal from you ${dash} not save while exploring or brainstorming.
+
+| User says (examples) | Agent action |
+|---|---|
+| "Save this to my MCP memory." | Call \`remember_fact\` |
+| "Remember this for next time." | Call \`remember_fact\` |
+| "Yes, persist that nuance." | Call \`remember_fact\` |
+| Vague approval during exploration | **Do not** call \`remember_fact\` |
+
+Without a checkpoint phrase, the learning stays in the chat and is lost when the session ends.
 
 </details>
 

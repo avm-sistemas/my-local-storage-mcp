@@ -1,8 +1,9 @@
 # Local Storage MCP Server
+<img width="1280" height="632" alt="my-local-storage-mcp" src="https://github.com/user-attachments/assets/cfeb0571-957a-4e4c-ae75-5f0ee3a9e121" />
 
 [![Build](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml)
 
-**Languages:** [English](README.md) · [Português (BR)](README.pt-BR.md)
+**Languages:** [English](README.md) ï¿½ [Portuguï¿½s (BR)](README.pt-BR.md)
 
 A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for persistent local memory. Lets agents (Cursor, Claude Desktop, etc.) store and retrieve business-rule nuances, architectural decisions, and domain knowledge without bloating the conversation context.
 
@@ -29,28 +30,8 @@ npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
 
 Or clone, run `npm install`, and point your MCP client to `dist/index.js`.
 
-### Cursor configuration (`mcp.json`)
-
-```json
-{
-  "mcpServers": {
-    "my-local-storage-mcp": {
-      "command": "node",
-      "args": ["C:/path/to/my-local-storage-mcp/dist/index.js"],
-      "env": {
-        "MCP_PRIMARY_HOST": "http://127.0.0.1:8080",
-        "MCP_PRIMARY_MODEL": "qwen2.5-1.5b",
-        "MCP_PRIMARY_PROVIDER": "openai",
-        "MCP_FALLBACK_HOST": "http://127.0.0.1:11434",
-        "MCP_FALLBACK_MODEL": "qwen2.5:3b",
-        "MCP_FALLBACK_PROVIDER": "ollama"
-      }
-    }
-  }
-}
+CREATE INDEX IF NOT EXISTS idx_learning_lookup ON local_learning(topic, keywords);
 ```
-
-Consolidator env vars are optional. Without an AI provider, semantic merge is disabled (hash and Jaccard deduplication still work).
 
 ---
 

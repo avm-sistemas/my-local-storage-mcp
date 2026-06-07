@@ -3,7 +3,6 @@
 
 [![Build](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/my-local-storage-mcp.svg)](https://www.npmjs.com/package/my-local-storage-mcp)
-[Documentation](https://avm-sistemas.github.io/my-local-storage-mcp/)
 
 <details>
 <summary><strong>Português (BR)</strong></summary>

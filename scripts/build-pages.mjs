@@ -7,7 +7,8 @@ import { marked } from "marked";
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const siteDir = path.join(root, "site");
 const readmePath = path.join(root, "README.md");
-const pagesUrl = "https://avm-sistemas.github.io/my-local-storage-mcp/";
+const cname = "my-local-storage-mcp.avmsistemas.net";
+const pagesUrl = `https://${cname}/`;
 
 execSync("node scripts/write-readmes.mjs", { cwd: root, stdio: "inherit" });
 
@@ -50,5 +51,6 @@ ${body}
 fs.mkdirSync(siteDir, { recursive: true });
 fs.writeFileSync(path.join(siteDir, "index.html"), html, "utf8");
 fs.writeFileSync(path.join(siteDir, ".nojekyll"), "", "utf8");
+fs.writeFileSync(path.join(siteDir, "CNAME"), cname + "\n", "utf8");
 
-console.log("OK", { siteDir, pagesUrl, bytes: fs.statSync(path.join(siteDir, "index.html")).size });
+console.log("OK", { siteDir, pagesUrl, cname, bytes: fs.statSync(path.join(siteDir, "index.html")).size });

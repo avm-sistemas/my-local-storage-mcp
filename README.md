@@ -16,7 +16,14 @@ Construído com **Node.js**, **TypeScript** e **SQLite** · Banco: `~/.local_mcp
 npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
 ```
 
-**Princípios:** KISS (single SQLite file) · LLM-delegated indexing (`topic` + `keywords`) · zero cloud cost · on-idle compaction
+## Princípios de design
+
+| Princípio | O que significa |
+|---|---|
+| **KISS** | Um único arquivo SQLite (`~/.local_mcp_learning.db`); sem vector DB ou serviços pesados em background |
+| **LLM-delegated indexing** | The agent assigns `topic` + `keywords` when saving — no server-side NLP or embeddings |
+| **Zero cloud cost** | Armazenamento e recall locais; dados privados; sem API cloud para a memória principal |
+| **On-idle compaction** | Background consolidator merges redundancy when idle — keeps recall signal clean over time |
 
 ## Prompts que priorizam o MCP
 
@@ -228,7 +235,14 @@ Built with **Node.js**, **TypeScript**, and **SQLite** · Database: `~/.local_mc
 npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
 ```
 
-**Design principles:** KISS (single SQLite file) · LLM-delegated indexing (`topic` + `keywords`) · zero cloud cost · on-idle compaction
+## Design principles
+
+| Principle | What it means |
+|---|---|
+| **KISS** | Single SQLite file (`~/.local_mcp_learning.db`); no vector DB or heavy background services |
+| **LLM-delegated indexing** | The agent assigns `topic` + `keywords` when saving — no server-side NLP or embeddings |
+| **Zero cloud cost** | Local storage and recall; private data; no cloud API required for core memory |
+| **On-idle compaction** | Background consolidator merges redundancy when idle — keeps recall signal clean over time |
 
 ## Prompts that prioritize the MCP
 

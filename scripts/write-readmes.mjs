@@ -43,7 +43,16 @@ function translateToPt(enBody) {
       "| Aprova\u00e7\u00e3o vaga durante explora\u00e7\u00e3o | **N\u00e3o** chamar `remember_fact` |")
     .replace("Without a checkpoint phrase, the learning stays in the chat and is lost when the session ends.",
       "Sem frase de checkpoint, o aprendizado fica s\u00f3 no chat e se perde ao encerrar a sess\u00e3o.")
-    .replace("**Design principles:**", "**Princ\u00edpios:**")
+    .replace("## Design principles", "## Princ\u00edpios de design")
+    .replace("| Principle | What it means |", "| Princ\u00edpio | O que significa |")
+    .replace("| **KISS** | Single SQLite file (\`~/.local_mcp_learning.db\`); no vector DB or heavy background services |",
+      "| **KISS** | Um \u00fanico arquivo SQLite (\`~/.local_mcp_learning.db\`); sem vector DB ou servi\u00e7os pesados em background |")
+    .replace("| **LLM-delegated indexing** | The agent assigns \`topic\` + \`keywords\` when saving ${dash} no server-side NLP or embeddings |",
+      "| **LLM-delegated indexing** | O agente define \`topic\` + \`keywords\` ao gravar ${dash} sem NLP ou embeddings no servidor |")
+    .replace("| **Zero cloud cost** | Local storage and recall; private data; no cloud API required for core memory |",
+      "| **Zero cloud cost** | Armazenamento e recall locais; dados privados; sem API cloud para a mem\u00f3ria principal |")
+    .replace("| **On-idle compaction** | Background consolidator merges redundancy when idle ${dash} keeps recall signal clean over time |",
+      "| **On-idle compaction** | Consolidador em background funde redund\u00e2ncias quando ocioso ${dash} mant\u00e9m o recall limpo ao longo do tempo |")
     .replace("Installation &amp; Cursor setup", "Instala\u00e7\u00e3o e configura\u00e7\u00e3o no Cursor")
     .replace("Or clone the repo, run", "Ou clone o reposit\u00f3rio, rode")
     .replace("and point your MCP client to", "e aponte o MCP para")
@@ -116,7 +125,14 @@ Built with **Node.js**, **TypeScript**, and **SQLite** \u00b7 Database: \`~/.loc
 npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
 \`\`\`
 
-**Design principles:** KISS (single SQLite file) \u00b7 LLM-delegated indexing (\`topic\` + \`keywords\`) \u00b7 zero cloud cost \u00b7 on-idle compaction
+## Design principles
+
+| Principle | What it means |
+|---|---|
+| **KISS** | Single SQLite file (\`~/.local_mcp_learning.db\`); no vector DB or heavy background services |
+| **LLM-delegated indexing** | The agent assigns \`topic\` + \`keywords\` when saving ${dash} no server-side NLP or embeddings |
+| **Zero cloud cost** | Local storage and recall; private data; no cloud API required for core memory |
+| **On-idle compaction** | Background consolidator merges redundancy when idle ${dash} keeps recall signal clean over time |
 
 ## Prompts that prioritize the MCP
 

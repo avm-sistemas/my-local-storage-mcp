@@ -537,7 +537,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             max_chars: {
               type: "number",
-              description: "Trunca facts do tipo 'detail' acima deste limite. Âncoras nunca são truncadas. Em format='compact', padrão 400 se omitido."
+              description: "Trunca facts do tipo 'detail' acima deste limite. âncoras nunca são truncadas. Em format='compact', padrão 400 se omitido."
             },
             limit: {
               type: "number",
@@ -573,7 +573,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             max_chars: {
               type: "number",
-              description: "Trunca facts do tipo 'detail' acima deste limite. Âncoras nunca são truncadas. Em format='compact', padrão 400 se omitido."
+              description: "Trunca facts do tipo 'detail' acima deste limite. âncoras nunca são truncadas. Em format='compact', padrão 400 se omitido."
             },
             limit: {
               type: "number",

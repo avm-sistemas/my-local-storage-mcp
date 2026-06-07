@@ -10,8 +10,6 @@ Servidor [Model Context Protocol (MCP)](https://modelcontextprotocol.io) para me
 
 Construído com **Node.js**, **TypeScript** e **SQLite** · Banco: `~/.local_mcp_learning.db` · **Versão `1.4.1`**
 
-> O GitHub não suporta abas nativas em README. Este doc usa **seções colapsáveis** (`<details>`) para manter a visão geral enxuta — clique no título para expandir.
-
 ## Início rápido
 
 ```bash
@@ -19,6 +17,19 @@ npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
 ```
 
 **Princípios:** KISS (single SQLite file) · LLM-delegated indexing (`topic` + `keywords`) · zero cloud cost · on-idle compaction
+
+## Prompts que priorizam o MCP
+
+O agente só chama ferramentas MCP quando o pedido deixa a intenção clara. Use frases explícitas para maximizar recall e evitar gravações perdidas:
+
+| Momento | Exemplo de prompt | Ferramenta |
+|---|---|---|
+| Início da sessão | `Antes de começar, faça recall das âncoras do tópico java-legacy na memória MCP local (compact).` | `recall_by_topic` |
+| Consulta de domínio | `Busque na memória MCP local regras sobre PedidoVenda e N+1.` | `recall_facts` |
+| Carregar contexto do projeto | `O que já temos gravado na memória local sobre este repositório?` | `recall_facts` / `recall_by_topic` |
+| **Checkpoint (gravar)** | `Grave isso na memória MCP — confirmado.` / `Lembre disso nas próximas sessões.` | `remember_fact` |
+
+**Rotina sugerida:** recall compacto ao abrir a sessão → trabalho → frase de checkpoint explícita quando uma nuance deve persistir.
 
 <details>
 <summary><strong>Instalação e configuração no Cursor</strong></summary>
@@ -66,7 +77,16 @@ Grava um aprendizado persistente. Deduplica automaticamente via `fact_hash` (MD5
 | `record_type` | `anchor` (conceitos fundamentais) ou `detail` (padrão) |
 | `priority` | `high` (default) or `low` (contexto temporário) |
 
-**Checkpoint:** gravar somente quando o usuário confirmar explicitamente que a nuance deve ser persistida — não durante exploração.
+> **Checkpoint (rotina):** `remember_fact` é só para aprendizados confirmados. O agente deve aguardar um sinal explícito de gravação — não gravar durante exploração ou brainstorming.
+
+| Usuário diz (exemplos) | Ação do agente |
+|---|---|
+| "Grave isso na memória MCP." | Chamar `remember_fact` |
+| "Lembre disso na próxima vez." | Chamar `remember_fact` |
+| "Sim, persista essa nuance." | Chamar `remember_fact` |
+| Aprovação vaga durante exploração | **Não** chamar `remember_fact` |
+
+Sem frase de checkpoint, o aprendizado fica só no chat e se perde ao encerrar a sessão.
 
 </details>
 
@@ -202,8 +222,6 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for per
 
 Built with **Node.js**, **TypeScript**, and **SQLite** · Database: `~/.local_mcp_learning.db` · **Version `1.4.1`**
 
-> GitHub README does not support native tabs. This doc uses **collapsible sections** (`<details>`) to keep the overview scannable — click a heading to expand.
-
 ## Quick start
 
 ```bash
@@ -211,6 +229,19 @@ npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
 ```
 
 **Design principles:** KISS (single SQLite file) · LLM-delegated indexing (`topic` + `keywords`) · zero cloud cost · on-idle compaction
+
+## Prompts that prioritize the MCP
+
+The agent invokes MCP tools only when the request makes the intent clear. Use explicit phrases to maximize recall and avoid missed saves:
+
+| Moment | Example prompt | Tool |
+|---|---|---|
+| Session start | `Before we start, recall anchors for topic java-legacy from my local MCP memory (compact).` | `recall_by_topic` |
+| Domain lookup | `Search my local MCP memory for rules about PedidoVenda and N+1.` | `recall_facts` |
+| Load project context | `What do we already have stored in local memory about this repo?` | `recall_facts` / `recall_by_topic` |
+| **Checkpoint save** | `Save this to my MCP memory — confirmed.` / `Remember this for future sessions.` | `remember_fact` |
+
+**Suggested routine:** compact recall at session open → work → explicit checkpoint phrase when a nuance must persist.
 
 <details>
 <summary><strong>Installation &amp; Cursor setup</strong></summary>
@@ -258,7 +289,16 @@ Stores a persistent learning. Deduplicates automatically via `fact_hash` (MD5 of
 | `record_type` | `anchor` (fundamental concepts) or `detail` (default) |
 | `priority` | `high` (default) or `low` (temporary session context) |
 
-**Checkpoint:** save only when the user explicitly confirms the nuance should be persisted — not during exploration.
+> **Checkpoint (routine):** `remember_fact` is for confirmed learnings only. The agent must wait for an explicit save signal from you — not save while exploring or brainstorming.
+
+| User says (examples) | Agent action |
+|---|---|
+| "Save this to my MCP memory." | Call `remember_fact` |
+| "Remember this for next time." | Call `remember_fact` |
+| "Yes, persist that nuance." | Call `remember_fact` |
+| Vague approval during exploration | **Do not** call `remember_fact` |
+
+Without a checkpoint phrase, the learning stays in the chat and is lost when the session ends.
 
 </details>
 

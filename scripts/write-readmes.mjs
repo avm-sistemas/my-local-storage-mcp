@@ -12,6 +12,8 @@ function translateToPt(enBody) {
     .replace("Built with **Node.js**, **TypeScript**, and **SQLite** \u00b7 Database:", "Constru\u00eddo com **Node.js**, **TypeScript** e **SQLite** \u00b7 Banco:")
     .replace("**Version \`1.4.1\`", "**Vers\u00e3o \`1.4.1\`")
     .replace("## Quick start", "## In\u00edcio r\u00e1pido")
+    .replace("Requires **Node.js 20+**. After install, use the `my-local-storage-mcp` command in your MCP client.",
+      "Requer **Node.js 20+**. Ap\u00f3s instalar, use o comando `my-local-storage-mcp` no cliente MCP.")
     .replace("## Prompts that prioritize the MCP", "## Prompts que priorizam o MCP")
     .replace("The agent invokes MCP tools only when the request makes the intent clear. Use explicit phrases to maximize recall and avoid missed saves:",
       "O agente s\u00f3 chama ferramentas MCP quando o pedido deixa a inten\u00e7\u00e3o clara. Use frases expl\u00edcitas para maximizar recall e evitar grava\u00e7\u00f5es perdidas:")
@@ -54,9 +56,10 @@ function translateToPt(enBody) {
     .replace("| **On-idle compaction** | Background consolidator merges redundancy when idle ${dash} keeps recall signal clean over time |",
       "| **On-idle compaction** | Consolidador em background funde redund\u00e2ncias quando ocioso ${dash} mant\u00e9m o recall limpo ao longo do tempo |")
     .replace("Installation &amp; Cursor setup", "Instala\u00e7\u00e3o e configura\u00e7\u00e3o no Cursor")
-    .replace("Or clone the repo, run", "Ou clone o reposit\u00f3rio, rode")
-    .replace("and point your MCP client to", "e aponte o MCP para")
-    .replace("C:/path/to/my-local-storage-mcp", "C:/caminho/para/my-local-storage-mcp")
+    .replace("### From npm (recommended)", "### Via npm (recomendado)")
+    .replace("### From Git (development)", "### Via Git (desenvolvimento)")
+    .replace("Or clone the repo, run `npm install`, and point your MCP client to `dist/index.js`.",
+      "Ou clone o reposit\u00f3rio, rode `npm install`, e aponte o MCP para `dist/index.js`.")
     .replace("Consolidator env vars are optional. Without an AI provider, semantic merge is disabled (hash and Jaccard deduplication still work).",
       "Vari\u00e1veis do consolidador s\u00e3o opcionais. Sem provider AI, o merge sem\u00e2ntico fica desabilitado (deduplica\u00e7\u00e3o por hash e Jaccard continuam).")
     .replace("MCP tools", "Ferramentas MCP")
@@ -122,8 +125,10 @@ Built with **Node.js**, **TypeScript**, and **SQLite** \u00b7 Database: \`~/.loc
 ## Quick start
 
 \`\`\`bash
-npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
+npm install -g my-local-storage-mcp
 \`\`\`
+
+Requires **Node.js 20+**. After install, use the \`my-local-storage-mcp\` command in your MCP client.
 
 ## Design principles
 
@@ -150,6 +155,18 @@ The agent invokes MCP tools only when the request makes the intent clear. Use ex
 <details>
 <summary><strong>Installation &amp; Cursor setup</strong></summary>
 
+### From npm (recommended)
+
+\`\`\`bash
+npm install -g my-local-storage-mcp
+\`\`\`
+
+### From Git (development)
+
+\`\`\`bash
+npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
+\`\`\`
+
 Or clone the repo, run \`npm install\`, and point your MCP client to \`dist/index.js\`.
 
 ### Cursor (\`mcp.json\`)
@@ -158,8 +175,8 @@ Or clone the repo, run \`npm install\`, and point your MCP client to \`dist/inde
 {
   "mcpServers": {
     "my-local-storage-mcp": {
-      "command": "node",
-      "args": ["C:/path/to/my-local-storage-mcp/dist/index.js"],
+      "command": "my-local-storage-mcp",
+      "args": [],
       "env": {
         "MCP_PRIMARY_HOST": "http://127.0.0.1:8080",
         "MCP_PRIMARY_MODEL": "qwen2.5-1.5b",
@@ -334,6 +351,7 @@ const header = `# Local Storage MCP Server
 <img width="1280" height="632" alt="my-local-storage-mcp" src="https://github.com/user-attachments/assets/cfeb0571-957a-4e4c-ae75-5f0ee3a9e121" />
 
 [![Build](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml)
+[![npm version](https://img.shields.io/npm/v/my-local-storage-mcp.svg)](https://www.npmjs.com/package/my-local-storage-mcp)
 `;
 
 const readme = `${header}

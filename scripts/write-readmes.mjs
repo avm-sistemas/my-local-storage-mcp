@@ -270,6 +270,7 @@ ISC License ${dash} see [LICENSE](LICENSE).`;
 const bodyPt = translateToPt(bodyEn);
 
 const header = `# Local Storage MCP Server
+<img width="1280" height="632" alt="my-local-storage-mcp" src="https://github.com/user-attachments/assets/cfeb0571-957a-4e4c-ae75-5f0ee3a9e121" />
 
 [![Build](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml)
 `;

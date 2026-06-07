@@ -51,6 +51,7 @@ const INTERVAL_MS             = (parseInt(process.env.MCP_CONSOLIDATION_INTERVAL
 const JACCARD_THRESHOLD       = parseFloat(process.env.MCP_CONSOLIDATION_THRESHOLD ?? "0.25");
 const MAX_PENDING_CYCLES      = parseInt(process.env.MCP_CONSOLIDATION_MAX_PENDING_CYCLES ?? "3");
 const MAX_MERGE_CHARS         = parseInt(process.env.MCP_AI_MAX_MERGE_CHARS ?? "2000");
+const DEFAULT_RECALL_MAX_CHARS = parseInt(process.env.MCP_RECALL_DEFAULT_MAX_CHARS ?? "400");
 
 // ---------------------------------------------------------------------------
 // Banco de dados
@@ -80,6 +81,8 @@ async function initDb() {
   if (!colNames.includes("priority"))             await db.run(`ALTER TABLE local_learning ADD COLUMN priority             TEXT NOT NULL DEFAULT 'high'`);
   if (!colNames.includes("consolidation_status")) await db.run(`ALTER TABLE local_learning ADD COLUMN consolidation_status TEXT NOT NULL DEFAULT 'ok'`);
   if (!colNames.includes("pending_cycles"))       await db.run(`ALTER TABLE local_learning ADD COLUMN pending_cycles       INTEGER NOT NULL DEFAULT 0`);
+  if (!colNames.includes("access_count"))         await db.run(`ALTER TABLE local_learning ADD COLUMN access_count         INTEGER NOT NULL DEFAULT 0`);
+  if (!colNames.includes("last_accessed"))        await db.run(`ALTER TABLE local_learning ADD COLUMN last_accessed        TIMESTAMP`);
 
   // PASSO 3: índices — agora todas as colunas já existem com certeza
   await db.exec(`
@@ -90,6 +93,8 @@ async function initDb() {
       ON local_learning(fact_hash)
       WHERE fact_hash IS NOT NULL;
   `);
+
+  await backfillFactHashes();
 }
 
 // ---------------------------------------------------------------------------
@@ -99,6 +104,49 @@ async function initDb() {
 function factHash(fact: string): string {
   const normalized = fact.toLowerCase().trim().replace(/\s+/g, " ");
   return createHash("md5").update(normalized).digest("hex");
+}
+
+async function backfillFactHashes(): Promise<void> {
+  const usedRows: { fact_hash: string }[] = await db.all(
+    `SELECT fact_hash FROM local_learning WHERE fact_hash IS NOT NULL`
+  );
+  const usedHashes = new Set(usedRows.map(r => r.fact_hash));
+
+  const pending: { id: number; fact: string }[] = await db.all(
+    `SELECT id, fact FROM local_learning
+     WHERE (fact_hash IS NULL OR fact_hash = '')
+       AND consolidation_status != 'merged'
+     ORDER BY id ASC`
+  );
+
+  if (pending.length === 0) return;
+
+  let filled   = 0;
+  let absorbed = 0;
+
+  for (const row of pending) {
+    const hash = factHash(row.fact);
+
+    if (!usedHashes.has(hash)) {
+      await db.run(
+        `UPDATE local_learning SET fact_hash = ? WHERE id = ?`,
+        [hash, row.id]
+      );
+      usedHashes.add(hash);
+      filled++;
+      continue;
+    }
+
+    await db.run(
+      `UPDATE local_learning SET consolidation_status = 'merged' WHERE id = ?`,
+      [row.id]
+    );
+    absorbed++;
+  }
+
+  if (filled > 0 || absorbed > 0) {
+    console.error(`[Backfill] fact_hash: ${filled} preenchido(s), ${absorbed} duplicata(s) absorvida(s).`);
+  }
 }
 
 function keywordSet(keywords: string): Set<string> {
@@ -113,6 +161,91 @@ function jaccardScore(a: Set<string>, b: Set<string>): number {
   const intersection = new Set([...a].filter(x => b.has(x)));
   const union        = new Set([...a, ...b]);
   return union.size === 0 ? 0 : intersection.size / union.size;
+}
+
+interface RecallRow {
+  id:           number;
+  topic:        string;
+  keywords:     string;
+  fact:         string;
+  record_type:  string;
+  priority:     string;
+  created_at:   string;
+}
+
+type RecallFormat = "full" | "compact";
+
+function buildTypeClause(typeFilter: string): string {
+  if (typeFilter === "anchor") return "AND record_type = 'anchor'";
+  if (typeFilter === "detail") return "AND record_type = 'detail'";
+  return "";
+}
+
+function truncateFact(fact: string, recordType: string, maxChars?: number): string {
+  if (!maxChars || recordType === "anchor") return fact;
+  if (fact.length <= maxChars) return fact;
+  return fact.slice(0, maxChars) + "...";
+}
+
+function formatRecallRow(row: RecallRow, format: RecallFormat, maxChars?: number): string {
+  const fact = truncateFact(row.fact, row.record_type, maxChars);
+  if (format === "compact") {
+    return `[${row.record_type}] ${row.topic} | ${row.keywords} -> ${fact}`;
+  }
+  return `---\n• Tópico: ${row.topic} [${row.record_type}]\n• Tags: ${row.keywords}\n• Data: ${row.created_at}\n• Fato: ${fact}`;
+}
+
+async function touchAccess(ids: number[]): Promise<void> {
+  if (ids.length === 0) return;
+  await db.run(
+    `UPDATE local_learning
+     SET access_count = access_count + 1,
+         last_accessed = CURRENT_TIMESTAMP
+     WHERE id IN (${ids.map(() => "?").join(",")})`,
+    ids
+  );
+}
+
+async function executeRecall(
+  whereClause: string,
+  params: unknown[],
+  options: {
+    type_filter?: string;
+    format?:      RecallFormat;
+    max_chars?:   number;
+    limit?:       number;
+  }
+): Promise<string> {
+  const {
+    type_filter = "all",
+    format      = "full",
+    max_chars,
+    limit       = 10
+  } = options;
+
+  const effectiveMaxChars = max_chars ?? (format === "compact" ? DEFAULT_RECALL_MAX_CHARS : undefined);
+
+  const rows: RecallRow[] = await db.all(
+    `SELECT id, topic, keywords, fact, record_type, priority, created_at
+     FROM local_learning
+     WHERE ${whereClause}
+       AND consolidation_status != 'merged'
+       ${buildTypeClause(type_filter)}
+     ORDER BY
+       CASE record_type WHEN 'anchor' THEN 0 ELSE 1 END,
+       CASE priority    WHEN 'high'   THEN 0 ELSE 1 END,
+       access_count DESC,
+       created_at DESC
+     LIMIT ?`,
+    [...params, limit]
+  );
+
+  if (rows.length === 0) {
+    return "Nenhum aprendizado local correspondente foi encontrado.";
+  }
+
+  await touchAccess(rows.map(r => r.id));
+  return rows.map(r => formatRecallRow(r, format, effectiveMaxChars)).join("\n\n");
 }
 
 // ---------------------------------------------------------------------------
@@ -343,7 +476,7 @@ function scheduleConsolidation() {
 // ---------------------------------------------------------------------------
 
 const server = new Server(
-  { name: "my-local-storage-mcp", version: "1.3.0" },
+  { name: "my-local-storage-mcp", version: "1.4.1" },
   { capabilities: { tools: {} } }
 );
 
@@ -352,7 +485,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
     tools: [
       {
         name: "remember_fact",
-        description: "Armazena um aprendizado, insight, decisão arquitetural ou preferência técnica de forma persistente. Evita duplicatas automaticamente.",
+        description: "Armazena um aprendizado, insight, decisão arquitetural ou preferência técnica de forma persistente. Evita duplicatas automaticamente. Use apenas quando o usuário confirmar explicitamente que a nuance deve ser persistida (checkpoint de aprendizado) — não grave durante exploração.",
         inputSchema: {
           type: "object",
           properties: {
@@ -384,7 +517,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "recall_facts",
-        description: "Busca na memória local por fatos aprendidos anteriormente. Retorna no máximo 10 registros, priorizando âncoras e alta prioridade. Registros já consolidados não aparecem.",
+        description: "Busca na memória local por termo livre (topic, keywords ou fact). Retorna no máximo 10 registros, priorizando âncoras e alta prioridade. Use format='compact' para economizar tokens. Registros já consolidados não aparecem.",
         inputSchema: {
           type: "object",
           properties: {
@@ -396,9 +529,58 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               type: "string",
               enum: ["all", "anchor", "detail"],
               description: "Filtra por tipo. Use 'anchor' no início de uma sessão para carregar só o contexto de alto nível (economiza tokens). Padrão: 'all'."
+            },
+            format: {
+              type: "string",
+              enum: ["full", "compact"],
+              description: "Formato de saída. 'compact' retorna uma linha por registro (recomendado). Padrão: 'full'."
+            },
+            max_chars: {
+              type: "number",
+              description: "Trunca facts do tipo 'detail' acima deste limite. Âncoras nunca são truncadas. Em format='compact', padrão 400 se omitido."
+            },
+            limit: {
+              type: "number",
+              description: "Máximo de registros retornados. Padrão: 10."
             }
           },
           required: ["query"]
+        }
+      },
+      {
+        name: "recall_by_topic",
+        description: "Busca fatos por tópico exato (estruturado). Menos ruído que recall_facts. Retorna no máximo 10 registros. Use format='compact' para economizar tokens.",
+        inputSchema: {
+          type: "object",
+          properties: {
+            topic: {
+              type: "string",
+              description: "Tópico exato (ex: 'java-legacy', 'infraestrutura'). Case-insensitive."
+            },
+            keyword: {
+              type: "string",
+              description: "Filtro opcional dentro do tópico (busca em keywords e fact)."
+            },
+            type_filter: {
+              type: "string",
+              enum: ["all", "anchor", "detail"],
+              description: "Filtra por tipo. Padrão: 'all'."
+            },
+            format: {
+              type: "string",
+              enum: ["full", "compact"],
+              description: "Formato de saída. 'compact' retorna uma linha por registro (recomendado). Padrão: 'full'."
+            },
+            max_chars: {
+              type: "number",
+              description: "Trunca facts do tipo 'detail' acima deste limite. Âncoras nunca são truncadas. Em format='compact', padrão 400 se omitido."
+            },
+            limit: {
+              type: "number",
+              description: "Máximo de registros retornados. Padrão: 10."
+            }
+          },
+          required: ["topic"]
         }
       }
     ]
@@ -452,37 +634,62 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     if (name === "recall_facts") {
       const {
         query,
-        type_filter = "all"
-      } = args as { query: string; type_filter?: string };
+        type_filter = "all",
+        format      = "full",
+        max_chars,
+        limit
+      } = args as {
+        query:       string;
+        type_filter?: string;
+        format?:      RecallFormat;
+        max_chars?:   number;
+        limit?:       number;
+      };
 
       const searchPattern = `%${query.toLowerCase().trim()}%`;
-      const typeClause    = type_filter !== "all"
-        ? `AND record_type = '${type_filter === "anchor" ? "anchor" : "detail"}'`
-        : "";
-
-      const rows = await db.all(
-        `SELECT topic, keywords, fact, record_type, priority, created_at
-         FROM local_learning
-         WHERE (topic LIKE ? OR keywords LIKE ? OR fact LIKE ?)
-           AND consolidation_status != 'merged'
-           ${typeClause}
-         ORDER BY
-           CASE record_type WHEN 'anchor' THEN 0 ELSE 1 END,
-           CASE priority    WHEN 'high'   THEN 0 ELSE 1 END,
-           created_at DESC
-         LIMIT 10`,
-        [searchPattern, searchPattern, searchPattern]
+      const text = await executeRecall(
+        "(topic LIKE ? OR keywords LIKE ? OR fact LIKE ?)",
+        [searchPattern, searchPattern, searchPattern],
+        { type_filter, format, max_chars, limit: limit ?? 10 }
       );
 
-      if (rows.length === 0) {
-        return { content: [{ type: "text", text: "Nenhum aprendizado local correspondente foi encontrado." }] };
+      return { content: [{ type: "text", text }] };
+    }
+
+    if (name === "recall_by_topic") {
+      const {
+        topic,
+        keyword,
+        type_filter = "all",
+        format      = "full",
+        max_chars,
+        limit
+      } = args as {
+        topic:        string;
+        keyword?:     string;
+        type_filter?: string;
+        format?:      RecallFormat;
+        max_chars?:   number;
+        limit?:       number;
+      };
+
+      const sanitizedTopic = topic.toLowerCase().trim();
+      let whereClause      = "topic = ?";
+      const params: unknown[] = [sanitizedTopic];
+
+      if (keyword?.trim()) {
+        const kwPattern = `%${keyword.toLowerCase().trim()}%`;
+        whereClause += " AND (keywords LIKE ? OR fact LIKE ?)";
+        params.push(kwPattern, kwPattern);
       }
 
-      const formattedResult = rows.map(r =>
-        `---\n• Tópico: ${r.topic} [${r.record_type}]\n• Tags: ${r.keywords}\n• Data: ${r.created_at}\n• Fato: ${r.fact}`
-      ).join("\n\n");
+      const text = await executeRecall(
+        whereClause,
+        params,
+        { type_filter, format, max_chars, limit: limit ?? 10 }
+      );
 
-      return { content: [{ type: "text", text: formattedResult }] };
+      return { content: [{ type: "text", text }] };
     }
 
     throw new Error(`Tool interna '${name}' não implementada.`);

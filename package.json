@@ -1,25 +1,44 @@
 {
   "name": "my-local-storage-mcp",
   "version": "1.4.1",
-  "description": "MCP server para armazenamento de aprendizado local",
+  "description": "MCP server for persistent local memory (SQLite). Store and recall business rules, decisions, and domain knowledge for Cursor and other MCP clients.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
     "my-local-storage-mcp": "./dist/index.js"
   },
   "files": [
-    "dist"
-  ],  
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "prepublishOnly": "node --check dist/index.js"
   },
   "keywords": [
-    "storage",
-    "mcp"
+    "mcp",
+    "model-context-protocol",
+    "cursor",
+    "memory",
+    "sqlite",
+    "local-storage",
+    "ai-agent"
   ],
   "license": "ISC",
   "author": "Andre Mesquita",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avm-sistemas/my-local-storage-mcp.git"
+  },
+  "homepage": "https://github.com/avm-sistemas/my-local-storage-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/avm-sistemas/my-local-storage-mcp/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
     "sqlite": "^5.1.1",

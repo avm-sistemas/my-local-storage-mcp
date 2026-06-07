@@ -2,6 +2,7 @@
 <img width="1280" height="632" alt="my-local-storage-mcp" src="https://github.com/user-attachments/assets/cfeb0571-957a-4e4c-ae75-5f0ee3a9e121" />
 
 [![Build](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml)
+[![npm version](https://img.shields.io/npm/v/my-local-storage-mcp.svg)](https://www.npmjs.com/package/my-local-storage-mcp)
 
 <details>
 <summary><strong>Português (BR)</strong></summary>
@@ -13,8 +14,10 @@ Construído com **Node.js**, **TypeScript** e **SQLite** · Banco: `~/.local_mcp
 ## Início rápido
 
 ```bash
-npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
+npm install -g my-local-storage-mcp
 ```
+
+Requer **Node.js 20+**. Após instalar, use o comando `my-local-storage-mcp` no cliente MCP.
 
 ## Princípios de design
 
@@ -41,6 +44,18 @@ O agente só chama ferramentas MCP quando o pedido deixa a intenção clara. Use
 <details>
 <summary><strong>Instalação e configuração no Cursor</strong></summary>
 
+### Via npm (recomendado)
+
+```bash
+npm install -g my-local-storage-mcp
+```
+
+### Via Git (desenvolvimento)
+
+```bash
+npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
+```
+
 Ou clone o repositório, rode `npm install`, e aponte o MCP para `dist/index.js`.
 
 ### Cursor (`mcp.json`)
@@ -49,8 +64,8 @@ Ou clone o repositório, rode `npm install`, e aponte o MCP para `dist/index.js`
 {
   "mcpServers": {
     "my-local-storage-mcp": {
-      "command": "node",
-      "args": ["C:/caminho/para/my-local-storage-mcp/dist/index.js"],
+      "command": "my-local-storage-mcp",
+      "args": [],
       "env": {
         "MCP_PRIMARY_HOST": "http://127.0.0.1:8080",
         "MCP_PRIMARY_MODEL": "qwen2.5-1.5b",
@@ -232,8 +247,10 @@ Built with **Node.js**, **TypeScript**, and **SQLite** · Database: `~/.local_mc
 ## Quick start
 
 ```bash
-npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
+npm install -g my-local-storage-mcp
 ```
+
+Requires **Node.js 20+**. After install, use the `my-local-storage-mcp` command in your MCP client.
 
 ## Design principles
 
@@ -260,6 +277,18 @@ The agent invokes MCP tools only when the request makes the intent clear. Use ex
 <details>
 <summary><strong>Installation &amp; Cursor setup</strong></summary>
 
+### From npm (recommended)
+
+```bash
+npm install -g my-local-storage-mcp
+```
+
+### From Git (development)
+
+```bash
+npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
+```
+
 Or clone the repo, run `npm install`, and point your MCP client to `dist/index.js`.
 
 ### Cursor (`mcp.json`)
@@ -268,8 +297,8 @@ Or clone the repo, run `npm install`, and point your MCP client to `dist/index.j
 {
   "mcpServers": {
     "my-local-storage-mcp": {
-      "command": "node",
-      "args": ["C:/path/to/my-local-storage-mcp/dist/index.js"],
+      "command": "my-local-storage-mcp",
+      "args": [],
       "env": {
         "MCP_PRIMARY_HOST": "http://127.0.0.1:8080",
         "MCP_PRIMARY_MODEL": "qwen2.5-1.5b",

@@ -1,5 +1,7 @@
 # Local Storage MCP Server
 
+[![Build](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml)
+
 **Idiomas:** [English](README.md) · [Português (BR)](README.pt-BR.md)
 
 Servidor [Model Context Protocol (MCP)](https://modelcontextprotocol.io) para memória persistente local. Permite que agentes (Cursor, Claude Desktop, etc.) gravem e recuperem nuances de regras de negócio, decisões arquiteturais e conhecimento de domínio ? sem inflar o contexto da conversa.

@@ -11,6 +11,8 @@ function translateToPt(enBody) {
       `Servidor [Model Context Protocol (MCP)](https://modelcontextprotocol.io) para mem\u00f3ria persistente local. Permite que agentes (Cursor, Claude Desktop, etc.) gravem e recuperem nuances de regras de neg\u00f3cio, decis\u00f5es arquiteturais e conhecimento de dom\u00ednio ${dash} sem inflar o contexto da conversa.`)
     .replace("Built with **Node.js**, **TypeScript**, and **SQLite** \u00b7 Database:", "Constru\u00eddo com **Node.js**, **TypeScript** e **SQLite** \u00b7 Banco:")
     .replace("**Version \`1.4.1\`", "**Vers\u00e3o \`1.4.1\`")
+    .replace("[Documentation](https://avm-sistemas.github.io/my-local-storage-mcp/)",
+      "[Documenta\u00e7\u00e3o](https://avm-sistemas.github.io/my-local-storage-mcp/)")
     .replace("## Quick start", "## In\u00edcio r\u00e1pido")
     .replace("Requires **Node.js 20+**. After install, use the `my-local-storage-mcp` command in your MCP client.",
       "Requer **Node.js 20+**. Ap\u00f3s instalar, use o comando `my-local-storage-mcp` no cliente MCP.")
@@ -352,6 +354,7 @@ const header = `# Local Storage MCP Server
 
 [![Build](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/my-local-storage-mcp.svg)](https://www.npmjs.com/package/my-local-storage-mcp)
+[Documentation](https://avm-sistemas.github.io/my-local-storage-mcp/)
 `;
 
 const readme = `${header}

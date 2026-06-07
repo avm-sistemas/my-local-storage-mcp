@@ -1,0 +1,5 @@
+# UTF-8 source and docs
+*.md text eol=crlf
+*.ts text eol=crlf
+*.json text eol=crlf
+*.yml text eol=crlf

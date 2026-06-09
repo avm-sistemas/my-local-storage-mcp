@@ -1,5 +1,7 @@
 name: Publish npm
 
+# Auth: granular access token with "bypass 2FA for automation" in GitHub secret NPM_TOKEN.
+# Trusted Publisher (OIDC) can replace this later; npm does not validate TP config until publish.
 on:
   release:
     types: [published]
@@ -23,7 +25,7 @@ jobs:
         with:
           node-version: 24
 
-      - name: Upgrade npm for OIDC trusted publishing
+      - name: Upgrade npm
         run: |
           npm install -g npm@11
           node --version
@@ -41,15 +43,24 @@ jobs:
           node --check dist/index.js
           npm pack --dry-run
 
-      - name: Debug OIDC context
+      - name: Check NPM_TOKEN secret
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
-          echo "GITHUB_WORKFLOW=$GITHUB_WORKFLOW"
-          echo "GITHUB_WORKFLOW_REF=$GITHUB_WORKFLOW_REF"
-          if [ -n "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then echo "OIDC token endpoint: present"; else echo "OIDC token endpoint: MISSING"; fi
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "::error::GitHub secret NPM_TOKEN is missing. Create a granular npm token with bypass 2FA and add it to repo Settings -> Secrets."
+            exit 1
+          fi
+          echo "NPM_TOKEN secret: present"
+
+      - name: Configure npm registry for publish
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
 
       - name: Publish
-        run: |
-          rm -f .npmrc "$HOME/.npmrc"
-          echo "registry=https://registry.npmjs.org/" > .npmrc
-          npm publish --access public
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+

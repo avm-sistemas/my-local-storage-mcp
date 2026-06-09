@@ -1,25 +1,25 @@
-# Graphify Plugin v1 ? EspecificaÁ„o
+# Graphify Plugin v1 ? Especifica√ß√£o
 
 **Status:** Aprovado  
 **Data:** 2026-06-09  
-**Vers„o alvo:** `my-local-storage-mcp@1.5.0` + `@avm/my-local-storage-mcp-graphify@1.0.0`  
-**PrincÌpio:** KISS ? core inalterado sem plugin; um grafo ativo por sess„o.
+**Vers√£o alvo:** `my-local-storage-mcp@1.5.0` + `@avm/my-local-storage-mcp-graphify@1.0.0`  
+**Princ√≠pio:** KISS ? core inalterado sem plugin; um grafo ativo por sess√£o.
 
 ---
 
-## 0. PolÌtica de versionamento (semver)
+## 0. Pol√≠tica de versionamento (semver)
 
-Com downloads crescentes no [npm](https://www.npmjs.com/package/my-local-storage-mcp), a previsibilidade importa mais que um n˙mero grande.
+Com downloads crescentes no [npm](https://www.npmjs.com/package/my-local-storage-mcp), a previsibilidade importa mais que um n√∫mero grande.
 
-| Pacote | Vers„o | Motivo |
+| Pacote | Vers√£o | Motivo |
 |---|---|---|
-| `my-local-storage-mcp` | **1.5.0** (minor) | Plugin loader + interface `McpPlugin` s„o aditivos; tools core inalteradas; zero breaking para quem j· usa 1.4.x |
-| `@avm/my-local-storage-mcp-graphify` | **1.0.0** (major do add-on) | Primeiro plugin est·vel do ecossistema ? marco p˙blico separado do core |
-| `my-local-storage-mcp` | **2.0.0** (reservado) | SÛ quando houver breaking real: rename/remoÁ„o de tools, schema SQLite intrusivo, mudanÁa de defaults |
+| `my-local-storage-mcp` | **1.5.0** (minor) | Plugin loader + interface `McpPlugin` s√£o aditivos; tools core inalteradas; zero breaking para quem j√° usa 1.4.x |
+| `@avm/my-local-storage-mcp-graphify` | **1.0.0** (major do add-on) | Primeiro plugin est√°vel do ecossistema ? marco p√∫blico separado do core |
+| `my-local-storage-mcp` | **2.0.0** (reservado) | S√≥ quando houver breaking real: rename/remo√ß√£o de tools, schema SQLite intrusivo, mudan√ßa de defaults |
 
-**Regra:** n„o inflar o core para `2.0.0` por marketing. O salto visÌvel È o add-on `1.0.0`, n„o o minor do core.
+**Regra:** n√£o inflar o core para `2.0.0` por marketing. O salto vis√≠vel √© o add-on `1.0.0`, n√£o o minor do core.
 
-**Quem sÛ usa memÛria local:** `npm update -g my-local-storage-mcp` (1.4.1 ? 1.5.0), sem mudar `mcp.json`.
+**Quem s√≥ usa mem√≥ria local:** `npm update -g my-local-storage-mcp` (1.4.1 ? 1.5.0), sem mudar `mcp.json`.
 
 **Quem quer Graphify:** instalar o segundo pacote; core permanece em 1.5.0.
 
@@ -27,17 +27,17 @@ Com downloads crescentes no [npm](https://www.npmjs.com/package/my-local-storage
 
 ## 1. Contexto
 
-O `my-local-storage-mcp` guarda memÛria **sem‚ntica aprendida** (regras, decisıes, checkpoints) em SQLite. O [Graphify](https://github.com/safishamsi/graphify) gera um grafo **estrutural** do repositÛrio (`graphify-out/graph.json`).
+O `my-local-storage-mcp` guarda mem√≥ria **sem√¢ntica aprendida** (regras, decis√µes, checkpoints) em SQLite. O [Graphify](https://github.com/safishamsi/graphify) gera um grafo **estrutural** do reposit√≥rio (`graphify-out/graph.json`).
 
-S„o camadas complementares:
+S√£o camadas complementares:
 
 | Camada | Fonte | Pergunta que responde |
 |---|---|---|
-| MemÛria local | `remember_fact` / recall | ?O que decidimos / qual regra de negÛcio?? |
-| Graphify | AST + extraÁ„o sem‚ntica | ?Onde no cÛdigo isso vive / quem chama quem?? |
-| Codegraph (j· no `mcp.json`) | IndexaÁ„o ampla | NavegaÁ„o global em `C:\Users\andre.mesquita` |
+| Mem√≥ria local | `remember_fact` / recall | ?O que decidimos / qual regra de neg√≥cio?? |
+| Graphify | AST + extra√ß√£o sem√¢ntica | ?Onde no c√≥digo isso vive / quem chama quem?? |
+| Codegraph (j√° no `mcp.json`) | Indexa√ß√£o ampla | Navega√ß√£o global em `C:\Users\andre.mesquita` |
 
-O plugin Graphify liga a memÛria ao **grafo do projeto aberto**, sem Python em runtime e sem vector DB.
+O plugin Graphify liga a mem√≥ria ao **grafo do projeto aberto**, sem Python em runtime e sem vector DB.
 
 ---
 
@@ -45,17 +45,17 @@ O plugin Graphify liga a memÛria ao **grafo do projeto aberto**, sem Python em r
 
 - Add-on opcional, instalado separadamente do core.
 - Carregar `graph.json` (formato NetworkX node-link) em Node puro.
-- Auto-discovery **A2**: subir diretÛrios atÈ achar `.git`, ent„o `graphify-out/graph.json`.
+- Auto-discovery **A2**: subir diret√≥rios at√© achar `.git`, ent√£o `graphify-out/graph.json`.
 - Expor 3 tools MCP quando o grafo estiver resolvido.
 - Enriquecer recall com subgrafo compacto (`recall_with_graph`).
-- Zero regress„o quando o plugin n„o est· instalado ou o grafo n„o existe.
+- Zero regress√£o quando o plugin n√£o est√° instalado ou o grafo n√£o existe.
 
 ## 3. Fora do escopo v1
 
-- `MCP_GRAPHIFY_GRAPHS` (multi-repo) ? documentado como extens„o futura.
+- `MCP_GRAPHIFY_GRAPHS` (multi-repo) ? documentado como extens√£o futura.
 - Colunas `graph_node_id` / `graph_repo` no SQLite.
-- Spawn de `graphify serve` ou dependÍncia Python.
-- SubstituiÁ„o do `codegraph` no `mcp.json`.
+- Spawn de `graphify serve` ou depend√™ncia Python.
+- Substitui√ß√£o do `codegraph` no `mcp.json`.
 
 ---
 
@@ -78,9 +78,9 @@ my-local-storage-mcp/                 # npm: my-local-storage-mcp (core)
         tools.ts
 ```
 
-O core publica apenas `dist/` atual. O plugin publica seu prÛprio `dist/`.
+O core publica apenas `dist/` atual. O plugin publica seu pr√≥prio `dist/`.
 
-InstalaÁ„o opcional:
+Instala√ß√£o opcional:
 
 ```bash
 npm install -g my-local-storage-mcp
@@ -89,16 +89,16 @@ npm install -g @avm/my-local-storage-mcp-graphify
 
 ---
 
-## 5. AtivaÁ„o (vari·veis de ambiente)
+## 5. Ativa√ß√£o (vari√°veis de ambiente)
 
-| Vari·vel | ObrigatÛria | Default | DescriÁ„o |
+| Vari√°vel | Obrigat√≥ria | Default | Descri√ß√£o |
 |---|---|---|---|
-| `MCP_PLUGINS` | N„o | ? | Lista separada por vÌrgula. Ex.: `graphify` |
-| `MCP_GRAPHIFY_GRAPH_JSON` | N„o | ? | Path absoluto ou relativo ao `graph.json`. Se vazio, auto-discovery A2 |
-| `MCP_GRAPHIFY_MAX_NEIGHBORS` | N„o | `5` | M·ximo de nÛs vizinhos retornados |
-| `MCP_GRAPHIFY_QUERY_DEPTH` | N„o | `2` | Profundidade BFS para `graph_neighbors` |
-| `MCP_GRAPHIFY_MAX_NODES` | N„o | `10` | Teto de nÛs em `graph_query` / bloco de enrich |
-| `MCP_GRAPHIFY_RELOAD_CHECK_MS` | N„o | `5000` | Intervalo mÌnimo entre checagens de `mtime` |
+| `MCP_PLUGINS` | N√£o | ? | Lista separada por v√≠rgula. Ex.: `graphify` |
+| `MCP_GRAPHIFY_GRAPH_JSON` | N√£o | ? | Path absoluto ou relativo ao `graph.json`. Se vazio, auto-discovery A2 |
+| `MCP_GRAPHIFY_MAX_NEIGHBORS` | N√£o | `5` | M√°ximo de n√≥s vizinhos retornados |
+| `MCP_GRAPHIFY_QUERY_DEPTH` | N√£o | `2` | Profundidade BFS para `graph_neighbors` |
+| `MCP_GRAPHIFY_MAX_NODES` | N√£o | `10` | Teto de n√≥s em `graph_query` / bloco de enrich |
+| `MCP_GRAPHIFY_RELOAD_CHECK_MS` | N√£o | `5000` | Intervalo m√≠nimo entre checagens de `mtime` |
 
 Exemplo `mcp.json`:
 
@@ -119,26 +119,26 @@ Exemplo `mcp.json`:
 
 ## 6. Auto-discovery A2
 
-Algoritmo executado na inicializaÁ„o do plugin (e ao recarregar):
+Algoritmo executado na inicializa√ß√£o do plugin (e ao recarregar):
 
 ```
-1. Se MCP_GRAPHIFY_GRAPH_JSON estiver definido e n„o vazio:
-     resolver path absoluto ? se arquivo existe, usar; sen„o plugin inativo + log stderr
+1. Se MCP_GRAPHIFY_GRAPH_JSON estiver definido e n√£o vazio:
+     resolver path absoluto ? se arquivo existe, usar; sen√£o plugin inativo + log stderr
 
-2. Sen„o, comeÁar em process.cwd():
+2. Sen√£o, come√ßar em process.cwd():
      a. Se existe ./graphify-out/graph.json ? usar
      b. Se existe ./.git E ./graphify-out/graph.json na mesma pasta ? usar
-     c. Subir um nÌvel (dirname) e repetir (a?b)
-     d. Parar em filesystem root ou apÛs 50 nÌveis
+     c. Subir um n√≠vel (dirname) e repetir (a?b)
+     d. Parar em filesystem root ou ap√≥s 50 n√≠veis
 
 3. Se nenhum arquivo encontrado:
-     plugin inativo (n„o registra tools graph_*)
-     log ˙nico: [graphify-plugin] graph.json n„o encontrado; tools desabilitadas
+     plugin inativo (n√£o registra tools graph_*)
+     log √∫nico: [graphify-plugin] graph.json n√£o encontrado; tools desabilitadas
 ```
 
-**PrecedÍncia:** path explÌcito no env > `graphify-out` no `cwd` > `graphify-out` na raiz do repo (`.git`).
+**Preced√™ncia:** path expl√≠cito no env > `graphify-out` no `cwd` > `graphify-out` na raiz do repo (`.git`).
 
-**Recarregamento:** a cada chamada de tool graph_* (ou a cada N ms), comparar `mtime` do JSON; se mudou, reconstruir Ìndice em memÛria.
+**Recarregamento:** a cada chamada de tool graph_* (ou a cada N ms), comparar `mtime` do JSON; se mudou, reconstruir √≠ndice em mem√≥ria.
 
 ---
 
@@ -162,19 +162,19 @@ export interface RecallContext {
 export interface McpPlugin {
   readonly name: string;
 
-  /** Chamado na inicializaÁ„o; retorna false se plugin ficar inativo */
+  /** Chamado na inicializa√ß√£o; retorna false se plugin ficar inativo */
   init(env: NodeJS.ProcessEnv): Promise<boolean>;
 
   /** Tools extras registradas no ListTools */
   getTools(): ToolDefinition[];
 
-  /** Handler de tools do plugin; retorna null se tool n„o for deste plugin */
+  /** Handler de tools do plugin; retorna null se tool n√£o for deste plugin */
   handleTool(
     name: string,
     args: Record<string, unknown>
   ): Promise<{ content: { type: "text"; text: string }[] } | null>;
 
-  /** Bloco opcional anexado apÛs recall core */
+  /** Bloco opcional anexado ap√≥s recall core */
   afterRecall?(ctx: RecallContext): Promise<string | undefined>;
 }
 ```
@@ -182,17 +182,17 @@ export interface McpPlugin {
 ### Loader no core (`src/plugin-loader.ts`)
 
 ```
-1. Ler MCP_PLUGINS (split por vÌrgula, trim)
+1. Ler MCP_PLUGINS (split por v√≠rgula, trim)
 2. Para cada nome:
-     graphify ? import din‚mico de '@avm/my-local-storage-mcp-graphify'
+     graphify ? import din√¢mico de '@avm/my-local-storage-mcp-graphify'
                 fallback: './packages/plugin-graphify/dist/index.js' (dev local)
 3. Chamar plugin.init(process.env)
 4. Agregar getTools() de plugins ativos
-5. No CallTool: tentar handler core; se n„o achar, delegar aos plugins
-6. ApÛs executeRecall bem-sucedido: chamar afterRecall de cada plugin ativo e concatenar blocos
+5. No CallTool: tentar handler core; se n√£o achar, delegar aos plugins
+6. Ap√≥s executeRecall bem-sucedido: chamar afterRecall de cada plugin ativo e concatenar blocos
 ```
 
-Se import falhar ? log stderr, core continua sem plugin (n„o È erro fatal).
+Se import falhar ? log stderr, core continua sem plugin (n√£o √© erro fatal).
 
 ---
 
@@ -202,14 +202,14 @@ Registradas somente quando `init()` retorna `true` (grafo resolvido).
 
 ### 8.1 `graph_query`
 
-Busca nÛs por termo (label, id, tipo) e retorna subgrafo compacto.
+Busca n√≥s por termo (label, id, tipo) e retorna subgrafo compacto.
 
-| Par‚metro | Tipo | ObrigatÛrio | Default |
+| Par√¢metro | Tipo | Obrigat√≥rio | Default |
 |---|---|---|---|
 | `query` | string | sim | ? |
-| `limit` | number | n„o | `MCP_GRAPHIFY_MAX_NODES` |
+| `limit` | number | n√£o | `MCP_GRAPHIFY_MAX_NODES` |
 
-SaÌda compacta (1 linha por nÛ):
+Sa√≠da compacta (1 linha por n√≥):
 
 ```
 [graph] UserService (class) | degree: 12
@@ -219,29 +219,29 @@ SaÌda compacta (1 linha por nÛ):
 
 ### 8.2 `graph_neighbors`
 
-Vizinhos BFS a partir de um nÛ.
+Vizinhos BFS a partir de um n√≥.
 
-| Par‚metro | Tipo | ObrigatÛrio | Default |
+| Par√¢metro | Tipo | Obrigat√≥rio | Default |
 |---|---|---|---|
 | `node` | string | sim | id ou label exato |
-| `depth` | number | n„o | `MCP_GRAPHIFY_QUERY_DEPTH` |
-| `limit` | number | n„o | `MCP_GRAPHIFY_MAX_NEIGHBORS` |
+| `depth` | number | n√£o | `MCP_GRAPHIFY_QUERY_DEPTH` |
+| `limit` | number | n√£o | `MCP_GRAPHIFY_MAX_NEIGHBORS` |
 
 ### 8.3 `recall_with_graph`
 
 Combina recall core + enrich Graphify.
 
-| Par‚metro | Tipo | ObrigatÛrio | Default |
+| Par√¢metro | Tipo | Obrigat√≥rio | Default |
 |---|---|---|---|
 | `query` | string | sim | ? |
-| `type_filter` | enum | n„o | `all` |
-| `format` | enum | n„o | `compact` |
-| `max_chars` | number | n„o | env recall |
-| `limit` | number | n„o | `10` |
+| `type_filter` | enum | n√£o | `all` |
+| `format` | enum | n√£o | `compact` |
+| `max_chars` | number | n√£o | env recall |
+| `limit` | number | n√£o | `10` |
 
 Fluxo:
 
-1. Delegar recall ao core (`executeRecall` ? mesma lÛgica de `recall_facts`, incluindo `touchAccess`)
+1. Delegar recall ao core (`executeRecall` ? mesma l√≥gica de `recall_facts`, incluindo `touchAccess`)
 2. Extrair termos da query + labels mencionados nos fatos retornados
 3. `graph_query` interno com esses termos
 4. Concatenar: `recallText + "\n\n--- [graphify] ---\n" + graphBlock`
@@ -252,7 +252,7 @@ Se grafo inativo ? comportar como `recall_facts` puro (sem erro).
 
 ## 9. Formato `graph.json` esperado
 
-NetworkX node-link JSON (saÌda padr„o do Graphify):
+NetworkX node-link JSON (sa√≠da padr√£o do Graphify):
 
 ```json
 {
@@ -264,38 +264,38 @@ NetworkX node-link JSON (saÌda padr„o do Graphify):
 }
 ```
 
-O plugin normaliza `source`/`target` como string id. Õndices em memÛria:
+O plugin normaliza `source`/`target` como string id. √çndices em mem√≥ria:
 
 - `byId: Map<string, Node>`
-- `byLabel: Map<string, Node[]>` (colisıes permitidas)
-- `adjacency: Map<string, Edge[]>` (lista de adjacÍncia direcionada + reversa opcional para inbound)
+- `byLabel: Map<string, Node[]>` (colis√µes permitidas)
+- `adjacency: Map<string, Edge[]>` (lista de adjac√™ncia direcionada + reversa opcional para inbound)
 
 ---
 
 ## 10. Comportamento sem plugin / sem grafo
 
-| Cen·rio | Comportamento |
+| Cen√°rio | Comportamento |
 |---|---|
-| `MCP_PLUGINS` ausente | IdÍntico ao 1.4.1 |
-| Plugin n„o instalado | Log stderr; core normal |
-| Grafo n„o encontrado | Plugin inativo; tools graph_* ausentes em ListTools |
+| `MCP_PLUGINS` ausente | Id√™ntico ao 1.4.1 |
+| Plugin n√£o instalado | Log stderr; core normal |
+| Grafo n√£o encontrado | Plugin inativo; tools graph_* ausentes em ListTools |
 | `recall_with_graph` com grafo inativo | Fallback para recall puro |
 
 ---
 
 ## 11. Logging
 
-Tudo em `stderr` (n„o polui stdio MCP):
+Tudo em `stderr` (n√£o polui stdio MCP):
 
 ```
-[graphify-plugin] grafo carregado: C:\...\graphify-out\graph.json (4821 nÛs, 9102 arestas)
-[graphify-plugin] graph.json n„o encontrado; tools desabilitadas
+[graphify-plugin] grafo carregado: C:\...\graphify-out\graph.json (4821 n√≥s, 9102 arestas)
+[graphify-plugin] graph.json n√£o encontrado; tools desabilitadas
 [graphify-plugin] grafo recarregado (mtime alterado)
 ```
 
 ---
 
-## 12. Extens„o futura (v2 ? n„o implementar agora)
+## 12. Extens√£o futura (v2 ? n√£o implementar agora)
 
 ### Multi-repo (`MCP_GRAPHIFY_GRAPHS`)
 
@@ -308,7 +308,7 @@ Tudo em `stderr` (n„o polui stdio MCP):
 }
 ```
 
-Mesmas tools; par‚metro opcional `repo` em `graph_query` / `graph_neighbors`.
+Mesmas tools; par√¢metro opcional `repo` em `graph_query` / `graph_neighbors`.
 
 ### Links no SQLite
 
@@ -317,24 +317,24 @@ ALTER TABLE local_learning ADD COLUMN graph_node_id TEXT;
 ALTER TABLE local_learning ADD COLUMN graph_repo TEXT;
 ```
 
-`remember_fact` ganha `graph_node` opcional; recall enriquece automaticamente vizinhos do nÛ linkado.
+`remember_fact` ganha `graph_node` opcional; recall enriquece automaticamente vizinhos do n√≥ linkado.
 
 ---
 
-## 13. CritÈrios de aceite v1
+## 13. Crit√©rios de aceite v1
 
 - [ ] Core sem `MCP_PLUGINS` passa build e comporta-se como 1.4.1
-- [ ] Com plugin + `graph.json` v·lido, `ListTools` inclui `graph_query`, `graph_neighbors`, `recall_with_graph`
-- [ ] Auto-discovery A2 encontra grafo na raiz do git quando `cwd` È subpasta
+- [ ] Com plugin + `graph.json` v√°lido, `ListTools` inclui `graph_query`, `graph_neighbors`, `recall_with_graph`
+- [ ] Auto-discovery A2 encontra grafo na raiz do git quando `cwd` √© subpasta
 - [ ] `recall_with_graph` incrementa `access_count` (reusa `executeRecall`)
-- [ ] `mtime` alterado recarrega Ìndice sem reiniciar MCP
-- [ ] Grafo ausente n„o impede startup do core
-- [ ] README documenta instalaÁ„o e env do plugin
+- [ ] `mtime` alterado recarrega √≠ndice sem reiniciar MCP
+- [ ] Grafo ausente n√£o impede startup do core
+- [ ] README documenta instala√ß√£o e env do plugin
 
 ---
 
-## 14. ReferÍncias
+## 14. Refer√™ncias
 
 - Graphify: https://github.com/safishamsi/graphify
-- Roadmap Fase 2 (grafo leve): ‚ncoras em `mcp-evolucao` no banco local
-- Codegraph existente no `mcp.json` do usu·rio (escopo global, n„o substituÌdo)
+- Roadmap Fase 2 (grafo leve): √¢ncoras em `mcp-evolucao` no banco local
+- Codegraph existente no `mcp.json` do usu√°rio (escopo global, n√£o substitu√≠do)

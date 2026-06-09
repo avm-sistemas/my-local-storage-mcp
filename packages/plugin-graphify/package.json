@@ -1,0 +1,34 @@
+{
+  "name": "@avm/my-local-storage-mcp-graphify",
+  "version": "1.0.0",
+  "description": "Graphify add-on for my-local-storage-mcp ? query graph.json and enrich recall with structural context.",
+  "type": "module",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "fixtures"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "graphify",
+    "knowledge-graph",
+    "my-local-storage-mcp"
+  ],
+  "license": "ISC",
+  "author": "Andre Mesquita",
+  "peerDependencies": {
+    "my-local-storage-mcp": ">=1.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "my-local-storage-mcp": "file:../..",
+    "typescript": "^5.4.0"
+  }
+}

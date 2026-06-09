@@ -1,9 +1,24 @@
 {
   "name": "my-local-storage-mcp",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "MCP server for persistent local memory (SQLite). Store and recall business rules, decisions, and domain knowledge for Cursor and other MCP clients.",
   "type": "module",
   "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./plugin-types": {
+      "types": "./dist/plugin-types.d.ts",
+      "import": "./dist/plugin-types.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "plugin-types": ["dist/plugin-types.d.ts"]
+    }
+  },
+  "workspaces": [
+    "packages/*"
+  ],
   "bin": {
     "my-local-storage-mcp": "./dist/index.js"
   },

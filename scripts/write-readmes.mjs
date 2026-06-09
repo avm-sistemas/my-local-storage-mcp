@@ -10,7 +10,18 @@ function translateToPt(enBody) {
     .replace("A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for persistent local memory. Lets agents (Cursor, Claude Desktop, etc.) store and retrieve business-rule nuances, architectural decisions, and domain knowledge without bloating the conversation context.",
       `Servidor [Model Context Protocol (MCP)](https://modelcontextprotocol.io) para mem\u00f3ria persistente local. Permite que agentes (Cursor, Claude Desktop, etc.) gravem e recuperem nuances de regras de neg\u00f3cio, decis\u00f5es arquiteturais e conhecimento de dom\u00ednio ${dash} sem inflar o contexto da conversa.`)
     .replace("Built with **Node.js**, **TypeScript**, and **SQLite** \u00b7 Database:", "Constru\u00eddo com **Node.js**, **TypeScript** e **SQLite** \u00b7 Banco:")
-    .replace("**Version \`1.4.1\`", "**Vers\u00e3o \`1.4.1\`")
+    .replace("**Version \`1.5.0\`", "**Vers\u00e3o \`1.5.0\`")
+    .replace("## Plugins (optional)", "## Plugins (opcionais)")
+    .replace("The core stays KISS. Optional add-ons extend the server without changing default behavior.",
+      "O core permanece KISS. Add-ons opcionais estendem o servidor sem alterar o comportamento padr\u00e3o.")
+    .replace("Queries a [Graphify](https://github.com/safishamsi/graphify) `graph.json` and enriches recall with structural code context.",
+      "Consulta um `graph.json` do [Graphify](https://github.com/safishamsi/graphify) e enriquece o recall com contexto estrutural do c\u00f3digo.")
+    .replace("Leave `MCP_GRAPHIFY_GRAPH_JSON` empty for auto-discovery: walks up to the git root and loads `graphify-out/graph.json`.",
+      "Deixe `MCP_GRAPHIFY_GRAPH_JSON` vazio para auto-discovery: sobe at\u00e9 a raiz git e carrega `graphify-out/graph.json`.")
+    .replace("**Tools (when graph is found):** `graph_query`, `graph_neighbors`, `recall_with_graph`",
+      "**Ferramentas (quando o grafo existe):** `graph_query`, `graph_neighbors`, `recall_with_graph`")
+    .replace("**v1.5.0** ${dash} plugin architecture \u00b7 Graphify add-on (optional)",
+      "**v1.5.0** ${dash} arquitetura de plugins \u00b7 add-on Graphify (opcional)")
     .replace("## Quick start", "## In\u00edcio r\u00e1pido")
     .replace("Requires **Node.js 20+**. After install, use the `my-local-storage-mcp` command in your MCP client.",
       "Requer **Node.js 20+**. Ap\u00f3s instalar, use o comando `my-local-storage-mcp` no cliente MCP.")
@@ -120,7 +131,7 @@ function translateToPt(enBody) {
 
 const bodyEn = `A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for persistent local memory. Lets agents (Cursor, Claude Desktop, etc.) store and retrieve business-rule nuances, architectural decisions, and domain knowledge without bloating the conversation context.
 
-Built with **Node.js**, **TypeScript**, and **SQLite** \u00b7 Database: \`~/.local_mcp_learning.db\` \u00b7 **Version \`1.4.1\`**
+Built with **Node.js**, **TypeScript**, and **SQLite** \u00b7 Database: \`~/.local_mcp_learning.db\` \u00b7 **Version \`1.5.0\`**
 
 ## Quick start
 
@@ -138,6 +149,31 @@ Requires **Node.js 20+**. After install, use the \`my-local-storage-mcp\` comman
 | **LLM-delegated indexing** | The agent assigns \`topic\` + \`keywords\` when saving ${dash} no server-side NLP or embeddings |
 | **Zero cloud cost** | Local storage and recall; private data; no cloud API required for core memory |
 | **On-idle compaction** | Background consolidator merges redundancy when idle ${dash} keeps recall signal clean over time |
+
+## Plugins (optional)
+
+The core stays KISS. Optional add-ons extend the server without changing default behavior.
+
+### Graphify add-on (\`@avm/my-local-storage-mcp-graphify\`)
+
+Queries a [Graphify](https://github.com/safishamsi/graphify) \`graph.json\` and enriches recall with structural code context.
+
+\`\`\`bash
+npm install -g @avm/my-local-storage-mcp-graphify
+\`\`\`
+
+\`\`\`json
+"env": {
+  "MCP_PLUGINS": "graphify",
+  "MCP_GRAPHIFY_GRAPH_JSON": ""
+}
+\`\`\`
+
+Leave \`MCP_GRAPHIFY_GRAPH_JSON\` empty for auto-discovery: walks up to the git root and loads \`graphify-out/graph.json\`.
+
+**Tools (when graph is found):** \`graph_query\`, \`graph_neighbors\`, \`recall_with_graph\`
+
+Spec: [docs/specs/graphify-plugin-v1.md](docs/specs/graphify-plugin-v1.md)
 
 ## Prompts that prioritize the MCP
 
@@ -332,6 +368,8 @@ On startup, fills \`fact_hash\` for legacy records missing a hash. On collision,
 
 <details>
 <summary><strong>Changelog</strong></summary>
+
+**v1.5.0** ${dash} plugin architecture \u00b7 Graphify add-on (optional)
 
 **v1.4.1** ${dash} \`fact_hash\` backfill \u00b7 full legacy deduplication
 

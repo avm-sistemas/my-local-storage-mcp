@@ -21,9 +21,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
-          registry-url: https://registry.npmjs.org
 
       - name: Install dependencies
         run: npm ci
@@ -36,6 +35,14 @@ jobs:
           test -f dist/index.js
           node --check dist/index.js
           npm pack --dry-run
+
+      - name: Upgrade npm for OIDC trusted publishing
+        run: |
+          npm install -g npm@11
+          node --version
+          npm --version
+          if [ -f .npmrc ]; then echo "::warning::Removing project .npmrc (blocks OIDC)"; rm -f .npmrc; fi
+          if [ -f "$HOME/.npmrc" ]; then echo "::warning::Removing runner .npmrc (blocks OIDC)"; rm -f "$HOME/.npmrc"; fi
 
       - name: Publish
         run: npm publish --provenance --access public

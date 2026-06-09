@@ -14,14 +14,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20, 22]
+        node-version: [22, 24]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ matrix.node-version }}
           cache: npm
@@ -30,10 +30,13 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build
+        run: |
+          npm run build
+          npm run build -w @avm/my-local-storage-mcp-graphify
 
       - name: Verify output
         run: |
           test -f dist/index.js
+          test -f packages/plugin-graphify/dist/index.js
           node --check dist/index.js
-          echo "Build OK ? dist/index.js ($(wc -c < dist/index.js) bytes)"
+          echo "Build OK - dist/index.js ($(wc -c < dist/index.js) bytes)"

@@ -9,7 +9,7 @@
 
 Servidor [Model Context Protocol (MCP)](https://modelcontextprotocol.io) para memória persistente local. Permite que agentes (Cursor, Claude Desktop, etc.) gravem e recuperem nuances de regras de negócio, decisões arquiteturais e conhecimento de domínio — sem inflar o contexto da conversa.
 
-Construído com **Node.js**, **TypeScript** e **SQLite** · Banco: `~/.local_mcp_learning.db` · **Versão `1.4.1`**
+Construído com **Node.js**, **TypeScript** e **SQLite** · Banco: `~/.local_mcp_learning.db` · **Versão `1.5.0`**
 
 ## Início rápido
 
@@ -27,6 +27,31 @@ Requer **Node.js 20+**. Após instalar, use o comando `my-local-storage-mcp` no 
 | **LLM-delegated indexing** | The agent assigns `topic` + `keywords` when saving — no server-side NLP or embeddings |
 | **Zero cloud cost** | Armazenamento e recall locais; dados privados; sem API cloud para a memória principal |
 | **On-idle compaction** | Background consolidator merges redundancy when idle — keeps recall signal clean over time |
+
+## Plugins (opcionais)
+
+O core permanece KISS. Add-ons opcionais estendem o servidor sem alterar o comportamento padrão.
+
+### Graphify add-on (`@avm/my-local-storage-mcp-graphify`)
+
+Consulta um `graph.json` do [Graphify](https://github.com/safishamsi/graphify) e enriquece o recall com contexto estrutural do código.
+
+```bash
+npm install -g @avm/my-local-storage-mcp-graphify
+```
+
+```json
+"env": {
+  "MCP_PLUGINS": "graphify",
+  "MCP_GRAPHIFY_GRAPH_JSON": ""
+}
+```
+
+Deixe `MCP_GRAPHIFY_GRAPH_JSON` vazio para auto-discovery: sobe até a raiz git e carrega `graphify-out/graph.json`.
+
+**Ferramentas (quando o grafo existe):** `graph_query`, `graph_neighbors`, `recall_with_graph`
+
+Spec: [docs/specs/graphify-plugin-v1.md](docs/specs/graphify-plugin-v1.md)
 
 ## Prompts que priorizam o MCP
 
@@ -222,6 +247,8 @@ Na inicialização, preenche `fact_hash` em registros legados sem hash. On colli
 <details>
 <summary><strong>Changelog</strong></summary>
 
+**v1.5.0** — plugin architecture · Graphify add-on (optional)
+
 **v1.4.1** — Backfill de `fact_hash` · deduplicação completa em bases legadas
 
 **v1.4.0** — `format=compact` · `recall_by_topic` · contadores de acesso · checkpoint
@@ -242,7 +269,7 @@ Licença ISC — ver [LICENSE](LICENSE).
 
 A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for persistent local memory. Lets agents (Cursor, Claude Desktop, etc.) store and retrieve business-rule nuances, architectural decisions, and domain knowledge without bloating the conversation context.
 
-Built with **Node.js**, **TypeScript**, and **SQLite** · Database: `~/.local_mcp_learning.db` · **Version `1.4.1`**
+Built with **Node.js**, **TypeScript**, and **SQLite** · Database: `~/.local_mcp_learning.db` · **Version `1.5.0`**
 
 ## Quick start
 
@@ -260,6 +287,31 @@ Requires **Node.js 20+**. After install, use the `my-local-storage-mcp` command 
 | **LLM-delegated indexing** | The agent assigns `topic` + `keywords` when saving — no server-side NLP or embeddings |
 | **Zero cloud cost** | Local storage and recall; private data; no cloud API required for core memory |
 | **On-idle compaction** | Background consolidator merges redundancy when idle — keeps recall signal clean over time |
+
+## Plugins (optional)
+
+The core stays KISS. Optional add-ons extend the server without changing default behavior.
+
+### Graphify add-on (`@avm/my-local-storage-mcp-graphify`)
+
+Queries a [Graphify](https://github.com/safishamsi/graphify) `graph.json` and enriches recall with structural code context.
+
+```bash
+npm install -g @avm/my-local-storage-mcp-graphify
+```
+
+```json
+"env": {
+  "MCP_PLUGINS": "graphify",
+  "MCP_GRAPHIFY_GRAPH_JSON": ""
+}
+```
+
+Leave `MCP_GRAPHIFY_GRAPH_JSON` empty for auto-discovery: walks up to the git root and loads `graphify-out/graph.json`.
+
+**Tools (when graph is found):** `graph_query`, `graph_neighbors`, `recall_with_graph`
+
+Spec: [docs/specs/graphify-plugin-v1.md](docs/specs/graphify-plugin-v1.md)
 
 ## Prompts that prioritize the MCP
 
@@ -454,6 +506,8 @@ On startup, fills `fact_hash` for legacy records missing a hash. On collision, t
 
 <details>
 <summary><strong>Changelog</strong></summary>
+
+**v1.5.0** — plugin architecture · Graphify add-on (optional)
 
 **v1.4.1** — `fact_hash` backfill · full legacy deduplication
 

@@ -1,0 +1,14 @@
+{
+  "directed": true,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    { "id": "touchAccess", "label": "touchAccess", "type": "function" },
+    { "id": "executeRecall", "label": "executeRecall", "type": "function" },
+    { "id": "recall_facts", "label": "recall_facts", "type": "tool" }
+  ],
+  "links": [
+    { "source": "executeRecall", "target": "touchAccess", "type": "CALLS" },
+    { "source": "recall_facts", "target": "executeRecall", "type": "CALLS" }
+  ]
+}

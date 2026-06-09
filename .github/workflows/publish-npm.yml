@@ -22,7 +22,6 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: 24
-          registry-url: https://registry.npmjs.org
 
       - name: Upgrade npm for OIDC trusted publishing
         run: |
@@ -42,5 +41,15 @@ jobs:
           node --check dist/index.js
           npm pack --dry-run
 
+      - name: Debug OIDC context
+        run: |
+          echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
+          echo "GITHUB_WORKFLOW=$GITHUB_WORKFLOW"
+          echo "GITHUB_WORKFLOW_REF=$GITHUB_WORKFLOW_REF"
+          if [ -n "$ACTIONS_ID_TOKEN_REQUEST_URL" ]; then echo "OIDC token endpoint: present"; else echo "OIDC token endpoint: MISSING"; fi
+
       - name: Publish
-        run: npm publish --access public
+        run: |
+          rm -f .npmrc "$HOME/.npmrc"
+          echo "registry=https://registry.npmjs.org/" > .npmrc
+          npm publish --access public

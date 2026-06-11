@@ -8,7 +8,7 @@ function linkEndpoint(value: string | GraphNode): string {
 export function parseGraphJson(raw: string): GraphData {
   const data = JSON.parse(raw) as GraphData;
   if (!Array.isArray(data.nodes) || !Array.isArray(data.links)) {
-    throw new Error("graph.json inv·lido: nodes/links ausentes");
+    throw new Error("graph.json inv√°lido: nodes/links ausentes");
   }
   return data;
 }

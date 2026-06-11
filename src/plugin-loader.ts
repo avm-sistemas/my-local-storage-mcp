@@ -17,7 +17,7 @@ async function tryImport(moduleId: string): Promise<McpPlugin | null> {
       return plugin;
     }
   } catch {
-    // prÛximo candidato
+    // pr√≥ximo candidato
   }
   return null;
 }
@@ -39,7 +39,7 @@ async function loadPluginByName(name: string): Promise<McpPlugin | null> {
     if (plugin) return plugin;
   }
 
-  console.error(`[plugin-loader] plugin '${name}' n„o encontrado (instale o pacote add-on ou omita de MCP_PLUGINS).`);
+  console.error(`[plugin-loader] plugin '${name}' n√£o encontrado (instale o pacote add-on ou omita de MCP_PLUGINS).`);
   return null;
 }
 

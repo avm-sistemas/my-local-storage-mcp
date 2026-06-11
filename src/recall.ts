@@ -36,7 +36,7 @@ function formatRecallRow(row: RecallRow, format: RecallFormat, maxChars?: number
   if (format === "compact") {
     return `[${row.record_type}] ${row.topic} | ${row.keywords} -> ${fact}`;
   }
-  return `---\n? Tópico: ${row.topic} [${row.record_type}]\n? Tags: ${row.keywords}\n? Data: ${row.created_at}\n? Fato: ${fact}`;
+  return `---\n? TÃ³pico: ${row.topic} [${row.record_type}]\n? Tags: ${row.keywords}\n? Data: ${row.created_at}\n? Fato: ${fact}`;
 }
 
 async function touchAccess(ids: number[]): Promise<void> {

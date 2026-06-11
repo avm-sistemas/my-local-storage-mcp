@@ -12,7 +12,7 @@ import { dispatchPluginTool, getAllPluginTools, loadPlugins } from "./plugin-loa
 import type { McpPlugin, RecallFormat } from "./plugin-types.js";
 
 // ---------------------------------------------------------------------------
-// ConfiguraÃ§Ã£o via variÃ¡veis de ambiente
+// Configuração via variáveis de ambiente
 // ---------------------------------------------------------------------------
 const dbPath = path.join(os.homedir(), ".local_mcp_learning.db");
 
@@ -23,8 +23,8 @@ interface AiProvider {
   label:    string;
 }
 
-// Monta a lista de providers na ordem de preferÃªncia: primÃ¡rio â fallback
-// Se uma variÃ¡vel nÃ£o estiver definida, o provider Ã© ignorado silenciosamente
+// Monta a lista de providers na ordem de preferência: primário → fallback
+// Se uma variável não estiver definida, o provider é ignorado silenciosamente
 function buildProviders(): AiProvider[] {
   const providers: AiProvider[] = [];
 
@@ -33,7 +33,7 @@ function buildProviders(): AiProvider[] {
       host:     process.env.MCP_PRIMARY_HOST,
       model:    process.env.MCP_PRIMARY_MODEL    ?? "qwen2.5-1.5b",
       provider: (process.env.MCP_PRIMARY_PROVIDER ?? "openai") as "ollama" | "openai",
-      label:    "primÃ¡rio"
+      label:    "primário"
     });
   }
 
@@ -75,8 +75,8 @@ async function initDb() {
     );
   `);
 
-  // PASSO 2: migraÃ§Ã£o segura â adiciona colunas novas em bases existentes
-  // Precisa rodar ANTES de criar Ã­ndices que dependem dessas colunas
+  // PASSO 2: migração segura — adiciona colunas novas em bases existentes
+  // Precisa rodar ANTES de criar índices que dependem dessas colunas
   const cols     = await db.all(`PRAGMA table_info(local_learning)`);
   const colNames = cols.map((c: any) => c.name);
   if (!colNames.includes("fact_hash"))            await db.run(`ALTER TABLE local_learning ADD COLUMN fact_hash            TEXT`);
@@ -87,7 +87,7 @@ async function initDb() {
   if (!colNames.includes("access_count"))         await db.run(`ALTER TABLE local_learning ADD COLUMN access_count         INTEGER NOT NULL DEFAULT 0`);
   if (!colNames.includes("last_accessed"))        await db.run(`ALTER TABLE local_learning ADD COLUMN last_accessed        TIMESTAMP`);
 
-  // PASSO 3: Ã­ndices â agora todas as colunas jÃ¡ existem com certeza
+  // PASSO 3: índices — agora todas as colunas já existem com certeza
   await db.exec(`
     CREATE INDEX IF NOT EXISTS idx_learning_lookup
       ON local_learning(topic, keywords);
@@ -101,7 +101,7 @@ async function initDb() {
 }
 
 // ---------------------------------------------------------------------------
-// UtilitÃ¡rios
+// Utilitários
 // ---------------------------------------------------------------------------
 
 function factHash(fact: string): string {
@@ -167,12 +167,12 @@ function jaccardScore(a: Set<string>, b: Set<string>): number {
 }
 
 // ---------------------------------------------------------------------------
-// AI: health check e merge com fallback automÃ¡tico
+// AI: health check e merge com fallback automático
 // ---------------------------------------------------------------------------
 
 async function isProviderAvailable(p: AiProvider): Promise<boolean> {
   const endpoint = p.provider === "openai"
-    ? `${p.host}/v1/models`   // LocalAI e compatÃ­veis OpenAI
+    ? `${p.host}/v1/models`   // LocalAI e compatíveis OpenAI
     : `${p.host}/api/tags`;   // Ollama nativo
   try {
     const res = await fetch(endpoint, { signal: AbortSignal.timeout(3000) });
@@ -185,17 +185,17 @@ async function isProviderAvailable(p: AiProvider): Promise<boolean> {
 async function mergeWithProvider(p: AiProvider, facts: string[]): Promise<string | null> {
   const totalChars = facts.reduce((sum, f) => sum + f.length, 0);
   if (totalChars > MAX_MERGE_CHARS) {
-    // ConteÃºdo muito grande para o modelo â cai para concatenaÃ§Ã£o no chamador
-    console.error(`[Consolidador][${p.label}] Grupo grande demais (${totalChars} chars > ${MAX_MERGE_CHARS}). Usando concatenaÃ§Ã£o.`);
+    // Conteúdo muito grande para o modelo — cai para concatenação no chamador
+    console.error(`[Consolidador][${p.label}] Grupo grande demais (${totalChars} chars > ${MAX_MERGE_CHARS}). Usando concatenação.`);
     return null;
   }
 
   const numbered   = facts.map((f, i) => `REGISTRO ${i + 1}:\n${f}`).join("\n\n");
   const systemText = [
-    "VocÃª Ã© um assistente tÃ©cnico consolidando uma base de conhecimento de software.",
-    "Regras: nÃ£o perca informaÃ§Ã£o tÃ©cnica, elimine apenas repetiÃ§Ãµes literais,",
+    "Você é um assistente técnico consolidando uma base de conhecimento de software.",
+    "Regras: não perca informação técnica, elimine apenas repetições literais,",
     "mantenha nomes de classes, tabelas, arquivos e FKs exatos.",
-    "Responda APENAS com o texto consolidado, sem preÃ¢mbulo."
+    "Responda APENAS com o texto consolidado, sem preâmbulo."
   ].join(" ");
 
   try {
@@ -246,7 +246,7 @@ async function aiMerge(facts: string[]): Promise<{ result: string; label: string
   for (const provider of AI_PROVIDERS) {
     const available = await isProviderAvailable(provider);
     if (!available) {
-      console.error(`[Consolidador] Provider ${provider.label} (${provider.host}) indisponÃ­vel. Tentando prÃ³ximo.`);
+      console.error(`[Consolidador] Provider ${provider.label} (${provider.host}) indisponível. Tentando próximo.`);
       continue;
     }
 
@@ -255,14 +255,14 @@ async function aiMerge(facts: string[]): Promise<{ result: string; label: string
       return { result, label: provider.label };
     }
 
-    console.error(`[Consolidador] Provider ${provider.label} disponÃ­vel mas merge falhou. Tentando prÃ³ximo.`);
+    console.error(`[Consolidador] Provider ${provider.label} disponível mas merge falhou. Tentando próximo.`);
   }
 
   return null; // todos os providers falharam
 }
 
 // ---------------------------------------------------------------------------
-// Consolidador â roda no idle do event loop
+// Consolidador — roda no idle do event loop
 // ---------------------------------------------------------------------------
 
 async function runConsolidation(): Promise<void> {
@@ -276,7 +276,7 @@ async function runConsolidation(): Promise<void> {
 
     if (rows.length < 2) return;
 
-    // --- FASE 1: DetecÃ§Ã£o de grupos por Jaccard ---
+    // --- FASE 1: Detecção de grupos por Jaccard ---
     const groups:  number[][] = [];
     const assigned            = new Set<number>();
 
@@ -305,7 +305,7 @@ async function runConsolidation(): Promise<void> {
 
     if (groups.length === 0) return;
 
-    console.error(`[Consolidador] ${groups.length} grupo(s) detectado(s) para consolidaÃ§Ã£o.`);
+    console.error(`[Consolidador] ${groups.length} grupo(s) detectado(s) para consolidação.`);
 
     // --- FASE 2: Merge por grupo ---
     for (const group of groups) {
@@ -314,26 +314,26 @@ async function runConsolidation(): Promise<void> {
       const forceFallback  = maxPending >= MAX_PENDING_CYCLES;
 
       let mergedFact: string | null  = null;
-      let mergeLabel: string         = "concatenaÃ§Ã£o";
+      let mergeLabel: string         = "concatenação";
 
       if (!forceFallback && AI_PROVIDERS.length > 0) {
-        // Tenta merge semÃ¢ntico â primÃ¡rio primeiro, depois fallback
+        // Tenta merge semântico — primário primeiro, depois fallback
         const merged = await aiMerge(members.map(r => r.fact));
         if (merged) {
           mergedFact = merged.result;
-          mergeLabel = `semÃ¢ntico via ${merged.label}`;
+          mergeLabel = `semântico via ${merged.label}`;
         }
       }
 
       if (!mergedFact && forceFallback) {
         // Todos os providers falharam por MAX_PENDING_CYCLES ciclos consecutivos
-        // ConcatenaÃ§Ã£o estruturada como Ãºltimo recurso â nunca perde informaÃ§Ã£o
+        // Concatenação estruturada como último recurso — nunca perde informação
         mergedFact = members.map((r, i) => `[Fonte ${i + 1}] ${r.fact}`).join("\n\n");
-        mergeLabel = "concatenaÃ§Ã£o (fallback forÃ§ado)";
+        mergeLabel = "concatenação (fallback forçado)";
       }
 
       if (!mergedFact) {
-        // Ainda hÃ¡ esperanÃ§a de um provider voltar â marca pendente e aguarda
+        // Ainda há esperança de um provider voltar — marca pendente e aguarda
         const ids = members.map(r => r.id);
         await db.run(
           `UPDATE local_learning
@@ -346,7 +346,7 @@ async function runConsolidation(): Promise<void> {
         continue;
       }
 
-      // --- FASE 3: GravaÃ§Ã£o atÃ´mica ---
+      // --- FASE 3: Gravação atômica ---
       const anchor = members[0];
       const allKw  = [...new Set(
         members.flatMap(r => r.keywords.split(",").map((k: string) => k.trim()))
@@ -417,7 +417,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   const coreTools = [
       {
         name: "remember_fact",
-        description: "Armazena um aprendizado, insight, decisÃ£o arquitetural ou preferÃªncia tÃ©cnica de forma persistente. Evita duplicatas automaticamente. Use apenas quando o usuÃ¡rio confirmar explicitamente que a nuance deve ser persistida (checkpoint de aprendizado) â nÃ£o grave durante exploraÃ§Ã£o.",
+        description: "Armazena um aprendizado, insight, decisão arquitetural ou preferência técnica de forma persistente. Evita duplicatas automaticamente. Use apenas quando o usuário confirmar explicitamente que a nuance deve ser persistida (checkpoint de aprendizado) — não grave durante exploração.",
         inputSchema: {
           type: "object",
           properties: {
@@ -427,21 +427,21 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             },
             keywords: {
               type: "string",
-              description: "Palavras-chave relevantes para indexaÃ§Ã£o, separadas por vÃ­rgula (ex: 'dapper, performance, mpc, garbage-collector')"
+              description: "Palavras-chave relevantes para indexação, separadas por vírgula (ex: 'dapper, performance, mpc, garbage-collector')"
             },
             fact: {
               type: "string",
-              description: "O fato objetivo, cÃ³digo, regra ou decisÃ£o que precisa ser memorizada."
+              description: "O fato objetivo, código, regra ou decisão que precisa ser memorizada."
             },
             record_type: {
               type: "string",
               enum: ["anchor", "detail"],
-              description: "Use 'anchor' para conceitos fundamentais, fluxos de negÃ³cio, Ã­ndices de arquitetura e diagramas â registros que sobem primeiro em qualquer busca. Use 'detail' (padrÃ£o) para hbm.xml especÃ­ficos, campos, FKs e anÃ¡lises pontuais."
+              description: "Use 'anchor' para conceitos fundamentais, fluxos de negócio, índices de arquitetura e diagramas — registros que sobem primeiro em qualquer busca. Use 'detail' (padrão) para hbm.xml específicos, campos, FKs e análises pontuais."
             },
             priority: {
               type: "string",
               enum: ["high", "low"],
-              description: "Use 'high' (padrÃ£o) para decisÃµes durÃ¡veis. Use 'low' para contexto temporÃ¡rio de sessÃ£o."
+              description: "Use 'high' (padrão) para decisões duráveis. Use 'low' para contexto temporário de sessão."
             }
           },
           required: ["topic", "keywords", "fact"]
@@ -449,31 +449,31 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "recall_facts",
-        description: "Busca na memÃ³ria local por termo livre (topic, keywords ou fact). Retorna no mÃ¡ximo 10 registros, priorizando Ã¢ncoras e alta prioridade. Use format='compact' para economizar tokens. Registros jÃ¡ consolidados nÃ£o aparecem.",
+        description: "Busca na memória local por termo livre (topic, keywords ou fact). Retorna no máximo 10 registros, priorizando âncoras e alta prioridade. Use format='compact' para economizar tokens. Registros já consolidados não aparecem.",
         inputSchema: {
           type: "object",
           properties: {
             query: {
               type: "string",
-              description: "O termo, palavra-chave ou conceito que deseja resgatar da memÃ³ria."
+              description: "O termo, palavra-chave ou conceito que deseja resgatar da memória."
             },
             type_filter: {
               type: "string",
               enum: ["all", "anchor", "detail"],
-              description: "Filtra por tipo. Use 'anchor' no inÃ­cio de uma sessÃ£o para carregar sÃ³ o contexto de alto nÃ­vel (economiza tokens). PadrÃ£o: 'all'."
+              description: "Filtra por tipo. Use 'anchor' no início de uma sessão para carregar só o contexto de alto nível (economiza tokens). Padrão: 'all'."
             },
             format: {
               type: "string",
               enum: ["full", "compact"],
-              description: "Formato de saÃ­da. 'compact' retorna uma linha por registro (recomendado). PadrÃ£o: 'full'."
+              description: "Formato de saída. 'compact' retorna uma linha por registro (recomendado). Padrão: 'full'."
             },
             max_chars: {
               type: "number",
-              description: "Trunca facts do tipo 'detail' acima deste limite. Ã¢ncoras nunca sÃ£o truncadas. Em format='compact', padrÃ£o 400 se omitido."
+              description: "Trunca facts do tipo 'detail' acima deste limite. âncoras nunca são truncadas. Em format='compact', padrão 400 se omitido."
             },
             limit: {
               type: "number",
-              description: "MÃ¡ximo de registros retornados. PadrÃ£o: 10."
+              description: "Máximo de registros retornados. Padrão: 10."
             }
           },
           required: ["query"]
@@ -481,35 +481,35 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "recall_by_topic",
-        description: "Busca fatos por tÃ³pico exato (estruturado). Menos ruÃ­do que recall_facts. Retorna no mÃ¡ximo 10 registros. Use format='compact' para economizar tokens.",
+        description: "Busca fatos por tópico exato (estruturado). Menos ruído que recall_facts. Retorna no máximo 10 registros. Use format='compact' para economizar tokens.",
         inputSchema: {
           type: "object",
           properties: {
             topic: {
               type: "string",
-              description: "TÃ³pico exato (ex: 'java-legacy', 'infraestrutura'). Case-insensitive."
+              description: "Tópico exato (ex: 'java-legacy', 'infraestrutura'). Case-insensitive."
             },
             keyword: {
               type: "string",
-              description: "Filtro opcional dentro do tÃ³pico (busca em keywords e fact)."
+              description: "Filtro opcional dentro do tópico (busca em keywords e fact)."
             },
             type_filter: {
               type: "string",
               enum: ["all", "anchor", "detail"],
-              description: "Filtra por tipo. PadrÃ£o: 'all'."
+              description: "Filtra por tipo. Padrão: 'all'."
             },
             format: {
               type: "string",
               enum: ["full", "compact"],
-              description: "Formato de saÃ­da. 'compact' retorna uma linha por registro (recomendado). PadrÃ£o: 'full'."
+              description: "Formato de saída. 'compact' retorna uma linha por registro (recomendado). Padrão: 'full'."
             },
             max_chars: {
               type: "number",
-              description: "Trunca facts do tipo 'detail' acima deste limite. Ã¢ncoras nunca sÃ£o truncadas. Em format='compact', padrÃ£o 400 se omitido."
+              description: "Trunca facts do tipo 'detail' acima deste limite. âncoras nunca são truncadas. Em format='compact', padrão 400 se omitido."
             },
             limit: {
               type: "number",
-              description: "MÃ¡ximo de registros retornados. PadrÃ£o: 10."
+              description: "Máximo de registros retornados. Padrão: 10."
             }
           },
           required: ["topic"]
@@ -550,7 +550,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           [existing.id]
         );
         return {
-          content: [{ type: "text", text: `[MemÃ³ria Local]: Fato jÃ¡ registrado (ID ${existing.id}). RelevÃ¢ncia atualizada.` }]
+          content: [{ type: "text", text: `[Memória Local]: Fato já registrado (ID ${existing.id}). Relevância atualizada.` }]
         };
       }
 
@@ -562,7 +562,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       );
 
       return {
-        content: [{ type: "text", text: `[MemÃ³ria Local]: Fato indexado sob '${sanitizedTopic}' [${record_type}/${priority}].` }]
+        content: [{ type: "text", text: `[Memória Local]: Fato indexado sob '${sanitizedTopic}' [${record_type}/${priority}].` }]
       };
     }
 
@@ -636,7 +636,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         : { content: pluginResult.content };
     }
 
-    throw new Error(`Tool interna '${name}' nÃ£o implementada.`);
+    throw new Error(`Tool interna '${name}' não implementada.`);
 
   } catch (error: any) {
     return {
@@ -647,7 +647,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 // ---------------------------------------------------------------------------
-// InicializaÃ§Ã£o
+// Inicialização
 // ---------------------------------------------------------------------------
 
 async function main() {
@@ -659,15 +659,15 @@ async function main() {
 
   if (AI_PROVIDERS.length > 0) {
     const summary = AI_PROVIDERS.map(p => `${p.label}: ${p.host} (${p.model}/${p.provider})`).join(" | ");
-    console.error(`[Consolidador] Providers configurados â ${summary}`);
+    console.error(`[Consolidador] Providers configurados → ${summary}`);
     console.error(`[Consolidador] Intervalo: ${INTERVAL_MS / 60_000} min | Threshold Jaccard: ${JACCARD_THRESHOLD} | Max pending: ${MAX_PENDING_CYCLES}`);
     scheduleConsolidation();
   } else {
-    console.error("[Consolidador] Nenhum provider AI configurado. Merge semÃ¢ntico desabilitado.");
+    console.error("[Consolidador] Nenhum provider AI configurado. Merge semântico desabilitado.");
   }
 }
 
 main().catch((err) => {
-  console.error("Falha crÃ­tica ao iniciar o servidor MCP:", err);
+  console.error("Falha crítica ao iniciar o servidor MCP:", err);
   process.exit(1);
 });

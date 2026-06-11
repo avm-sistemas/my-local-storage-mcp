@@ -26,36 +26,36 @@ export function getGraphifyTools(): ToolDefinition[] {
   return [
     {
       name: "graph_query",
-      description: "Busca nÛs no grafo Graphify (graph.json) por termo em label, id ou type. Retorna subgrafo compacto.",
+      description: "Busca n√≥s no grafo Graphify (graph.json) por termo em label, id ou type. Retorna subgrafo compacto.",
       inputSchema: {
         type: "object",
         properties: {
           query: { type: "string", description: "Termo de busca." },
-          limit: { type: "number", description: "M·ximo de nÛs. Padr„o: MCP_GRAPHIFY_MAX_NODES." }
+          limit: { type: "number", description: "M√°ximo de n√≥s. Padr√£o: MCP_GRAPHIFY_MAX_NODES." }
         },
         required: ["query"]
       }
     },
     {
       name: "graph_neighbors",
-      description: "Vizinhos BFS a partir de um nÛ (id ou label) no grafo Graphify.",
+      description: "Vizinhos BFS a partir de um n√≥ (id ou label) no grafo Graphify.",
       inputSchema: {
         type: "object",
         properties: {
-          node:  { type: "string", description: "Id ou label do nÛ origem." },
-          depth: { type: "number", description: "Profundidade BFS. Padr„o: MCP_GRAPHIFY_QUERY_DEPTH." },
-          limit: { type: "number", description: "M·ximo de nÛs. Padr„o: MCP_GRAPHIFY_MAX_NEIGHBORS." }
+          node:  { type: "string", description: "Id ou label do n√≥ origem." },
+          depth: { type: "number", description: "Profundidade BFS. Padr√£o: MCP_GRAPHIFY_QUERY_DEPTH." },
+          limit: { type: "number", description: "M√°ximo de n√≥s. Padr√£o: MCP_GRAPHIFY_MAX_NEIGHBORS." }
         },
         required: ["node"]
       }
     },
     {
       name: "recall_with_graph",
-      description: "Recall da memÛria local + bloco compacto do grafo Graphify relacionado aos termos da busca.",
+      description: "Recall da mem√≥ria local + bloco compacto do grafo Graphify relacionado aos termos da busca.",
       inputSchema: {
         type: "object",
         properties: {
-          query:       { type: "string", description: "Termo de busca na memÛria local." },
+          query:       { type: "string", description: "Termo de busca na mem√≥ria local." },
           type_filter: { type: "string", enum: ["all", "anchor", "detail"] },
           format:      { type: "string", enum: ["full", "compact"] },
           max_chars:   { type: "number" },
@@ -71,7 +71,7 @@ function graphBlock(store: GraphStore, terms: string[], cfg: GraphifyEnv): strin
   const index = store.getIndex();
   if (!index) return "";
   const block = buildEnrichBlock(index, terms, cfg.maxNodes);
-  return block || "Nenhum nÛ correspondente no grafo.";
+  return block || "Nenhum n√≥ correspondente no grafo.";
 }
 
 export async function handleGraphifyTool(
@@ -89,7 +89,7 @@ export async function handleGraphifyTool(
     const limit = Number(args.limit ?? cfg.maxNodes);
     const nodes = searchNodes(index, query, limit);
     if (nodes.length === 0) {
-      return { content: [{ type: "text", text: "Nenhum nÛ encontrado no grafo." }] };
+      return { content: [{ type: "text", text: "Nenhum n√≥ encontrado no grafo." }] };
     }
     const text = nodes.map(n => formatNodeLine(n, index.adjacency.get(String(n.id)) ?? [])).join("\n");
     return { content: [{ type: "text", text }] };
@@ -101,7 +101,7 @@ export async function handleGraphifyTool(
     const limit = Number(args.limit ?? cfg.maxNeighbors);
     const result = bfsNeighbors(index, node, depth, limit);
     if (!result) {
-      return { content: [{ type: "text", text: `NÛ '${node}' n„o encontrado no grafo.` }] };
+      return { content: [{ type: "text", text: `N√≥ '${node}' n√£o encontrado no grafo.` }] };
     }
     const lines = [
       `[origin] ${result.origin.label ?? result.origin.id}`,
@@ -112,7 +112,7 @@ export async function handleGraphifyTool(
 
   if (name === "recall_with_graph") {
     if (!host?.executeRecall) {
-      return { content: [{ type: "text", text: "executeRecall indisponÌvel no host." }] };
+      return { content: [{ type: "text", text: "executeRecall indispon√≠vel no host." }] };
     }
 
     const query = String(args.query ?? "");

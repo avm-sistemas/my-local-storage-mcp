@@ -24,14 +24,14 @@ const plugin: McpPlugin = {
 
     const graphPath = resolveGraphPath(env);
     if (!graphPath) {
-      console.error("[graphify-plugin] graph.json n„o encontrado; tools desabilitadas");
+      console.error("[graphify-plugin] graph.json n√£o encontrado; tools desabilitadas");
       return false;
     }
 
     try {
       const index = store.load(graphPath);
       console.error(
-        `[graphify-plugin] grafo carregado: ${graphPath} (${index.nodeCount} nÛs, ${index.edgeCount} arestas)`
+        `[graphify-plugin] grafo carregado: ${graphPath} (${index.nodeCount} n√≥s, ${index.edgeCount} arestas)`
       );
       return true;
     } catch (err: unknown) {

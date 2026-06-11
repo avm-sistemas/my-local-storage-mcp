@@ -77,7 +77,7 @@ export function formatNodeLine(node: GraphNode, edges: IndexedEdge[]): string {
   const nodeEdges = edges.filter(e => e.direction === "out");
   const lines = [`[graph] ${label} (${type}) | id: ${id}`];
   for (const edge of nodeEdges.slice(0, 5)) {
-    const arrow = edge.direction === "out" ? "?" : "?";
+    const arrow = edge.direction === "out" ? "\u2192" : "\u2190";
     lines.push(`  ${arrow} ${edge.type ?? "LINK"} ${edge.target}`);
   }
   return lines.join("\n");

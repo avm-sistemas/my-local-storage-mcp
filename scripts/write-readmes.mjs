@@ -10,7 +10,7 @@ function translateToPt(enBody) {
     .replace("A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for persistent local memory. Lets agents (Cursor, Claude Desktop, etc.) store and retrieve business-rule nuances, architectural decisions, and domain knowledge without bloating the conversation context.",
       `Servidor [Model Context Protocol (MCP)](https://modelcontextprotocol.io) para mem\u00f3ria persistente local. Permite que agentes (Cursor, Claude Desktop, etc.) gravem e recuperem nuances de regras de neg\u00f3cio, decis\u00f5es arquiteturais e conhecimento de dom\u00ednio ${dash} sem inflar o contexto da conversa.`)
     .replace("Built with **Node.js**, **TypeScript**, and **SQLite** \u00b7 Database:", "Constru\u00eddo com **Node.js**, **TypeScript** e **SQLite** \u00b7 Banco:")
-    .replace("**Version \`1.5.0\`", "**Vers\u00e3o \`1.5.0\`")
+    .replace("**Version \`1.5.2\`", "**Vers\u00e3o \`1.5.2\`")
     .replace("## Plugins (optional)", "## Plugins (opcionais)")
     .replace("The core stays KISS. Optional add-ons extend the server without changing default behavior.",
       "O core permanece KISS. Add-ons opcionais estendem o servidor sem alterar o comportamento padr\u00e3o.")
@@ -20,8 +20,8 @@ function translateToPt(enBody) {
       "Deixe `MCP_GRAPHIFY_GRAPH_JSON` vazio para auto-discovery: sobe at\u00e9 a raiz git e carrega `graphify-out/graph.json`.")
     .replace("**Tools (when graph is found):** `graph_query`, `graph_neighbors`, `recall_with_graph`",
       "**Ferramentas (quando o grafo existe):** `graph_query`, `graph_neighbors`, `recall_with_graph`")
-    .replace("**v1.5.0** ${dash} plugin architecture \u00b7 Graphify add-on (optional)",
-      "**v1.5.0** ${dash} arquitetura de plugins \u00b7 add-on Graphify (opcional)")
+    .replace("**v1.5.2** ${dash} plugin architecture \u00b7 Graphify add-on (optional)",
+      "**v1.5.2** ${dash} arquitetura de plugins \u00b7 add-on Graphify (opcional)")
     .replace("## Quick start", "## In\u00edcio r\u00e1pido")
     .replace("Requires **Node.js 20+**. After install, use the `my-local-storage-mcp` command in your MCP client.",
       "Requer **Node.js 20+**. Ap\u00f3s instalar, use o comando `my-local-storage-mcp` no cliente MCP.")

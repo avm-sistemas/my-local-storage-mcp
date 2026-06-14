@@ -1,8 +1,17 @@
 # Local Storage MCP Server
 <img width="1280" height="632" alt="my-local-storage-mcp" src="https://github.com/user-attachments/assets/cfeb0571-957a-4e4c-ae75-5f0ee3a9e121" />
 
-[![Build](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/my-local-storage-mcp.svg)](https://www.npmjs.com/package/my-local-storage-mcp)
+<br>
+<br>
+[![Build](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml)
+<br>
+[![CodeQL](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/github-code-scanning/codeql)
+<br>
+[![Publish npm](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/publish-npm.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/publish-npm.yml)
+<br>
+[![Deploy GitHub Pages](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/pages.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/pages.yml)
+
 
 <details>
 <summary><strong>Português (BR)</strong></summary>

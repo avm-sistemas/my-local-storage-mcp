@@ -23,6 +23,14 @@
   ],
   "license": "ISC",
   "author": "Andre Mesquita",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/avm-sistemas/my-local-storage-mcp.git",
+    "directory": "packages/plugin-graphify"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "my-local-storage-mcp": ">=1.5.0"
   },

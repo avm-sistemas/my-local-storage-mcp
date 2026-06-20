@@ -9,7 +9,7 @@
 
 Servidor [Model Context Protocol (MCP)](https://modelcontextprotocol.io) para memória persistente local. Permite que agentes (Cursor, Claude Desktop, etc.) gravem e recuperem nuances de regras de negócio, decisões arquiteturais e conhecimento de domínio — sem inflar o contexto da conversa.
 
-Construído com **Node.js**, **TypeScript** e **SQLite** · Banco: `~/.local_mcp_learning.db` · **Versão `1.5.2`**
+Construído com **Node.js**, **TypeScript** e **SQLite** · Banco: `~/.local_mcp_learning.db` · **Versão `1.5.3`**
 
 ## Início rápido
 
@@ -247,6 +247,8 @@ Na inicialização, preenche `fact_hash` em registros legados sem hash. On colli
 <details>
 <summary><strong>Changelog</strong></summary>
 
+**v1.5.3** — Teams plugin loader (add-on) · visibility personal/team · analyst license validation · context scope
+
 **v1.5.2** — plugin architecture · Graphify add-on (optional)
 
 **v1.4.1** — Backfill de `fact_hash` · deduplicação completa em bases legadas
@@ -269,7 +271,7 @@ Licença ISC — ver [LICENSE](LICENSE).
 
 A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for persistent local memory. Lets agents (Cursor, Claude Desktop, etc.) store and retrieve business-rule nuances, architectural decisions, and domain knowledge without bloating the conversation context.
 
-Built with **Node.js**, **TypeScript**, and **SQLite** · Database: `~/.local_mcp_learning.db` · **Version `1.5.2`**
+Built with **Node.js**, **TypeScript**, and **SQLite** · Database: `~/.local_mcp_learning.db` · **Version `1.5.3`**
 
 ## Quick start
 
@@ -506,6 +508,8 @@ On startup, fills `fact_hash` for legacy records missing a hash. On collision, t
 
 <details>
 <summary><strong>Changelog</strong></summary>
+
+**v1.5.3** — Teams plugin loader (add-on) · visibility personal/team · analyst license validation · context scope
 
 **v1.5.2** — plugin architecture · Graphify add-on (optional)
 

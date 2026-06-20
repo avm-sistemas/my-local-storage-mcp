@@ -6,6 +6,10 @@ const PLUGIN_IMPORTS: Record<string, string[]> = {
   graphify: [
     "@avm/my-local-storage-mcp-graphify",
     "my-local-storage-mcp-graphify"
+  ],
+  teams: [
+    "@avm/my-local-storage-mcp-teams",
+    "my-local-storage-mcp-teams"
   ]
 };
 
@@ -37,6 +41,23 @@ async function loadPluginByName(name: string): Promise<McpPlugin | null> {
     );
     const plugin = await tryImport(pathToFileURL(localPath).href);
     if (plugin) return plugin;
+  }
+
+  if (name === "teams") {
+    const envPath = process.env.MCP_TEAMS_PLUGIN_PATH?.trim();
+    if (envPath) {
+      const plugin = await tryImport(pathToFileURL(envPath).href);
+      if (plugin) return plugin;
+    }
+    const base = path.dirname(fileURLToPath(import.meta.url));
+    const localCandidates = [
+      path.join(base, "../../my-local-storage-mcp-teams/packages/plugin-teams/dist/index.js"),
+      path.join(base, "../../../my-local-storage-mcp-teams/packages/plugin-teams/dist/index.js")
+    ];
+    for (const localPath of localCandidates) {
+      const plugin = await tryImport(pathToFileURL(localPath).href);
+      if (plugin) return plugin;
+    }
   }
 
   console.error(`[plugin-loader] plugin '${name}' não encontrado (instale o pacote add-on ou omita de MCP_PLUGINS).`);

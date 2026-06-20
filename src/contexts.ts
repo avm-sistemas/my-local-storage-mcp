@@ -3,11 +3,10 @@ export type Visibility = "personal" | "team";
 export interface RememberFields {
   context: string;
   visibility: Visibility;
-  /** Token UUID do analista (coluna SQLite `analyst_id`; licenciamento teams). */
+  /** Identificador opcional do autor (UUID). */
   analystId: string | null;
 }
 
-/** UUID (GUID) ? token de licença / identidade do analista no produto teams. */
 const ANALYST_ID_UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -17,21 +16,6 @@ export function normalizeAnalystId(value: string): string | null {
     return null;
   }
   return trimmed.toLowerCase();
-}
-
-export function warnInvalidMcpAnalystId(env: NodeJS.ProcessEnv): void {
-  const raw = env.MCP_ANALYST_ID?.trim();
-  if (!raw) {
-    return;
-  }
-  const normalized = normalizeAnalystId(raw);
-  if (!normalized) {
-    console.error(
-      `[Contextos] MCP_ANALYST_ID ignorado: deve ser UUID (token de licença/analista), recebido: ${raw.slice(0, 36)}`
-    );
-    return;
-  }
-  console.error(`[Contextos] MCP_ANALYST_ID: ${normalized.slice(0, 8)}?`);
 }
 
 export interface RecallScopeFilter {
@@ -76,11 +60,9 @@ export interface ResolveRememberResult {
 
 /**
  * Campos de escopo no remember: sempre decididos pela IA por registro.
- * Env só complementa analystId (token UUID), nunca trava projeto/visibilidade.
  */
 export function resolveRememberFields(
-  args: { context?: string; visibility?: string; analyst_id?: string; author?: string },
-  env: NodeJS.ProcessEnv
+  args: { context?: string; visibility?: string; analyst_id?: string; author?: string }
 ): ResolveRememberResult {
   const context = args.context?.trim()
     ? normalizeContext(args.context)
@@ -93,7 +75,6 @@ export function resolveRememberFields(
   const rawAnalyst =
     args.analyst_id?.trim()
     || args.author?.trim()
-    || env.MCP_ANALYST_ID?.trim()
     || "";
 
   if (!rawAnalyst) {

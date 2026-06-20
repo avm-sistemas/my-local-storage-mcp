@@ -21,7 +21,7 @@ async function tryImport(moduleId: string): Promise<McpPlugin | null> {
       return plugin;
     }
   } catch {
-    // pr√≥ximo candidato
+    // prÛximo candidato
   }
   return null;
 }
@@ -34,6 +34,12 @@ async function loadPluginByName(name: string): Promise<McpPlugin | null> {
     if (plugin) return plugin;
   }
 
+  const envPath = process.env[`MCP_${name.toUpperCase()}_PLUGIN_PATH`]?.trim();
+  if (envPath) {
+    const plugin = await tryImport(pathToFileURL(envPath).href);
+    if (plugin) return plugin;
+  }
+
   if (name === "graphify") {
     const localPath = path.join(
       path.dirname(fileURLToPath(import.meta.url)),
@@ -43,24 +49,7 @@ async function loadPluginByName(name: string): Promise<McpPlugin | null> {
     if (plugin) return plugin;
   }
 
-  if (name === "teams") {
-    const envPath = process.env.MCP_TEAMS_PLUGIN_PATH?.trim();
-    if (envPath) {
-      const plugin = await tryImport(pathToFileURL(envPath).href);
-      if (plugin) return plugin;
-    }
-    const base = path.dirname(fileURLToPath(import.meta.url));
-    const localCandidates = [
-      path.join(base, "../../my-local-storage-mcp-teams/packages/plugin-teams/dist/index.js"),
-      path.join(base, "../../../my-local-storage-mcp-teams/packages/plugin-teams/dist/index.js")
-    ];
-    for (const localPath of localCandidates) {
-      const plugin = await tryImport(pathToFileURL(localPath).href);
-      if (plugin) return plugin;
-    }
-  }
-
-  console.error(`[plugin-loader] plugin '${name}' n√£o encontrado (instale o pacote add-on ou omita de MCP_PLUGINS).`);
+  console.error(`[plugin-loader] plugin '${name}' n„o encontrado (instale o pacote add-on ou omita de MCP_PLUGINS).`);
   return null;
 }
 

@@ -10,8 +10,7 @@ import os from "os";
 import { executeRecall, executeRecallWithIds, initRecall, touchGraphHits } from "./recall.js";
 import { dispatchPluginTool, getAllPluginTools, loadPlugins } from "./plugin-loader.js";
 import type { McpPlugin, RecallFormat, RememberContext } from "./plugin-types.js";
-import { parseContextList, recallScopeFromArgs, resolveRememberFields, warnInvalidMcpAnalystId, normalizeAnalystId } from "./contexts.js";
-import { probeTeamsLicenseAtStartup, teamsLicenseConfigFromEnv, validateAnalystLicenseRemote } from "./analyst-license.js";
+import { parseContextList, recallScopeFromArgs, resolveRememberFields, normalizeAnalystId } from "./contexts.js";
 
 // ---------------------------------------------------------------------------
 // ConfiguraÃƒÂ§ÃƒÂ£o via variÃƒÂ¡veis de ambiente
@@ -447,7 +446,7 @@ async function notifyAfterRemember(ctx: RememberContext): Promise<void> {
 }
 
 const server = new Server(
-  { name: "my-local-storage-mcp", version: "1.5.3" },
+  { name: "my-local-storage-mcp", version: "1.5.4" },
   { capabilities: { tools: {} } }
 );
 
@@ -488,11 +487,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
             visibility: {
               type: "string",
               enum: ["personal", "team"],
-              description: "Inferir por registro: 'team' = conhecimento Ãºtil Ã  equipe (ex: regra LogOne, padrÃ£o do produto). 'personal' = homelab, spike, teste local, evoluÃ§Ã£o privada do MCP (padrÃ£o se omitido). Quem testa funcionalidades no lab grava como personal; decisÃ£o de produto compartilhada como team."
+              description: "Escopo de compartilhamento inferido por registro: 'personal' (padrão) ou 'team'. Add-ons podem impor regras extras quando 'team'."
             },
             analyst_id: {
               type: "string",
-              description: "Token UUID do analista (opcional). Deve ser GUID vÃ¡lido ? usado no cadastro de licenÃ§as (teams). PadrÃ£o: MCP_ANALYST_ID do ambiente, tambÃ©m UUID."
+              description: "Identificador opcional do autor (UUID). Omitir se não aplicável."
             }
           },
           required: ["topic", "keywords", "fact"]
@@ -630,8 +629,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const sanitizedKeywords = keywords.toLowerCase().trim();
       const hash              = factHash(fact);
       const resolved          = resolveRememberFields(
-        { context: contextArg, visibility: visibilityArg, analyst_id: analystIdArg, author: (args as { author?: string }).author },
-        process.env
+        { context: contextArg, visibility: visibilityArg, analyst_id: analystIdArg, author: (args as { author?: string }).author }
       );
 
       if (resolved.invalidAnalystId) {
@@ -639,43 +637,20 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           isError: true,
           content: [{
             type: "text",
-            text: `[MemÃ³ria Local]: analyst_id invÃ¡lido ? esperado UUID (token de licenÃ§a). Recebido: ${resolved.invalidAnalystId.slice(0, 36)}`
+            text: `[Memória Local]: analyst_id inválido ? esperado UUID. Recebido: ${resolved.invalidAnalystId.slice(0, 36)}`
           }]
         };
       }
 
       const scope = resolved.fields;
 
-      if (scope.visibility === "team") {
-        if (!scope.analystId) {
-          return {
-            isError: true,
-            content: [{
-              type: "text",
-              text: "[Memória Local]: visibility=team exige analyst_id (UUID de licença) ou MCP_ANALYST_ID válido no ambiente."
-            }]
-          };
-        }
-
-        const teamsCfg = teamsLicenseConfigFromEnv(process.env);
-        if (!teamsCfg) {
-          return {
-            isError: true,
-            content: [{
-              type: "text",
-              text: "[Memória Local]: visibility=team exige MCP_TEAMS_API_URL (ex: http://teams.lab.local/api/v1) para validar licença."
-            }]
-          };
-        }
-
-        if (teamsCfg.enabled) {
-          const licenseCheck = await validateAnalystLicenseRemote(teamsCfg, scope.analystId);
-          if (!licenseCheck.ok) {
-            return {
-              isError: true,
-              content: [{ type: "text", text: `[Memória Local]: ${licenseCheck.failure.message}` }]
-            };
-          }
+      for (const plugin of activePlugins) {
+        if (!plugin.validateRemember) continue;
+        const blocked = await plugin.validateRemember(scope, process.env);
+        if (blocked) {
+          return blocked.isError
+            ? { isError: true, content: blocked.content }
+            : { content: blocked.content };
         }
       }
 
@@ -824,8 +799,6 @@ async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
 
-  warnInvalidMcpAnalystId(process.env);
-  await probeTeamsLicenseAtStartup(process.env);
   console.error("[Contextos] Escopo por registro (IA): project=context + visibility; recall sem filtro fixo de ambiente.");
 
   if (AI_PROVIDERS.length > 0) {

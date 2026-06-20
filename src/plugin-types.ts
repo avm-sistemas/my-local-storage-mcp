@@ -35,6 +35,12 @@ export interface RememberContext {
   id?: number;
 }
 
+export interface RememberScopeFields {
+  context: string;
+  visibility: string;
+  analystId: string | null;
+}
+
 export interface PluginHostContext {
   executeRecall: (
     whereClause: string,
@@ -64,4 +70,9 @@ export interface McpPlugin {
   ): Promise<McpToolResult | null>;
   afterRecall?(ctx: RecallContext): Promise<string | undefined>;
   afterRemember?(ctx: RememberContext): Promise<void>;
+  /** Add-on may block remember_fact (e.g. license check). Return error result or null to allow. */
+  validateRemember?(
+    fields: RememberScopeFields,
+    env: NodeJS.ProcessEnv
+  ): Promise<McpToolResult | null>;
 }

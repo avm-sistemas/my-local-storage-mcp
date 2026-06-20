@@ -6,6 +6,10 @@ const PLUGIN_IMPORTS: Record<string, string[]> = {
   graphify: [
     "@avm/my-local-storage-mcp-graphify",
     "my-local-storage-mcp-graphify"
+  ],
+  teams: [
+    "@avm/my-local-storage-mcp-teams",
+    "my-local-storage-mcp-teams"
   ]
 };
 
@@ -17,7 +21,7 @@ async function tryImport(moduleId: string): Promise<McpPlugin | null> {
       return plugin;
     }
   } catch {
-    // pr√≥ximo candidato
+    // prÛximo candidato
   }
   return null;
 }
@@ -30,6 +34,12 @@ async function loadPluginByName(name: string): Promise<McpPlugin | null> {
     if (plugin) return plugin;
   }
 
+  const envPath = process.env[`MCP_${name.toUpperCase()}_PLUGIN_PATH`]?.trim();
+  if (envPath) {
+    const plugin = await tryImport(pathToFileURL(envPath).href);
+    if (plugin) return plugin;
+  }
+
   if (name === "graphify") {
     const localPath = path.join(
       path.dirname(fileURLToPath(import.meta.url)),
@@ -39,7 +49,7 @@ async function loadPluginByName(name: string): Promise<McpPlugin | null> {
     if (plugin) return plugin;
   }
 
-  console.error(`[plugin-loader] plugin '${name}' n√£o encontrado (instale o pacote add-on ou omita de MCP_PLUGINS).`);
+  console.error(`[plugin-loader] plugin '${name}' n„o encontrado (instale o pacote add-on ou omita de MCP_PLUGINS).`);
   return null;
 }
 

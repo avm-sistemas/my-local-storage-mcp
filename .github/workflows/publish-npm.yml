@@ -72,7 +72,11 @@ jobs:
 
       - name: Build
 
-        run: npm run build
+        run: |
+
+          npm run build
+
+          npm run build -w @avm/my-local-storage-mcp-graphify
 
 
 
@@ -82,9 +86,15 @@ jobs:
 
           test -f dist/index.js
 
+          test -f packages/plugin-graphify/dist/index.js
+
           node --check dist/index.js
 
+          node --check packages/plugin-graphify/dist/index.js
+
           npm pack --dry-run
+
+          npm pack --dry-run -w @avm/my-local-storage-mcp-graphify
 
 
 
@@ -120,9 +130,19 @@ jobs:
 
 
 
-      - name: Publish
+      - name: Publish core
 
         run: npm publish --access public --provenance
+
+        env:
+
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+
+
+      - name: Publish Graphify add-on
+
+        run: npm publish --access public --provenance -w @avm/my-local-storage-mcp-graphify
 
         env:
 

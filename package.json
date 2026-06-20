@@ -1,6 +1,6 @@
 {
   "name": "my-local-storage-mcp",
-  "version": "1.5.2",
+  "version": "1.5.4",
   "description": "MCP server for persistent local memory (SQLite). Store and recall business rules, decisions, and domain knowledge for Cursor and other MCP clients.",
   "type": "module",
   "main": "dist/index.js",

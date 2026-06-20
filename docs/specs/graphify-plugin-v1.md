@@ -2,7 +2,7 @@
 
 **Status:** Aprovado  
 **Data:** 2026-06-09  
-**Versão alvo:** `my-local-storage-mcp@1.5.0` + `@avm/my-local-storage-mcp-graphify@1.0.0`  
+**Versão alvo:** `my-local-storage-mcp@1.5.4` + `@avm/my-local-storage-mcp-graphify@1.0.0`  
 **Princípio:** KISS ? core inalterado sem plugin; um grafo ativo por sessão.
 
 ---
@@ -78,14 +78,16 @@ my-local-storage-mcp/                 # npm: my-local-storage-mcp (core)
         tools.ts
 ```
 
-O core publica apenas `dist/` atual. O plugin publica seu próprio `dist/`.
+O core publica apenas `dist/` atual. O plugin publica seu pr�prio `dist/` (GitHub Release dispara `npm publish` dos dois pacotes).
 
-Instalação opcional:
+Instala��o (npm global ? recomendado):
 
 ```bash
 npm install -g my-local-storage-mcp
 npm install -g @avm/my-local-storage-mcp-graphify
 ```
+
+Add-on opcional via `MCP_{NOME}_PLUGIN_PATH` apenas para desenvolvimento de plugins ainda n�o publicados.
 
 ---
 

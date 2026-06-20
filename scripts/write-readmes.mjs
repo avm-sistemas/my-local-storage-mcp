@@ -10,7 +10,34 @@ function translateToPt(enBody) {
     .replace("A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for persistent local memory. Lets agents (Cursor, Claude Desktop, etc.) store and retrieve business-rule nuances, architectural decisions, and domain knowledge without bloating the conversation context.",
       `Servidor [Model Context Protocol (MCP)](https://modelcontextprotocol.io) para mem\u00f3ria persistente local. Permite que agentes (Cursor, Claude Desktop, etc.) gravem e recuperem nuances de regras de neg\u00f3cio, decis\u00f5es arquiteturais e conhecimento de dom\u00ednio ${dash} sem inflar o contexto da conversa.`)
     .replace("Built with **Node.js**, **TypeScript**, and **SQLite** \u00b7 Database:", "Constru\u00eddo com **Node.js**, **TypeScript** e **SQLite** \u00b7 Banco:")
-    .replace("**Version \`1.5.2\`", "**Vers\u00e3o \`1.5.2\`")
+    .replace("**Version \`1.5.4\`", "**Vers\u00e3o \`1.5.4\`")
+    .replace("Minimal install (local memory only " + dash + " works offline after install):",
+      "Instala\u00e7\u00e3o m\u00ednima (s\u00f3 mem\u00f3ria local " + dash + " funciona offline ap\u00f3s o install):")
+    .replace("**With Graphify** (code graph, separate npm package):",
+      "**Com Graphify** (grafo de c\u00f3digo, pacote npm separado):")
+    .replace("The **open-source core** provides local memory only (`remember_fact`, `recall_facts`, `recall_by_topic`). Add-ons are separate npm packages, enabled via `MCP_PLUGINS`. A missing or failing add-on **does not block** the core.",
+      "O **core open source** inclui apenas mem\u00f3ria local (`remember_fact`, `recall_facts`, `recall_by_topic`). Add-ons s\u00e3o pacotes npm separados, ativados com `MCP_PLUGINS`. Falha ou aus\u00eancia de um add-on **n\u00e3o impede** o core.")
+    .replace("Commercial derivatives (e.g. team sync) live outside this repo and are not required for local use.",
+      "Produtos comerciais derivados (ex.: sync em equipe) ficam fora deste reposit\u00f3rio e n\u00e3o s\u00e3o necess\u00e1rios para uso local.")
+    .replace("Published to npm with core releases.",
+      "Publicado no npm junto com releases do core.")
+    .replace("In `mcp.json`, enable the plugin (global npm install is enough " + dash + " no local path):",
+      "No `mcp.json`, ative o plugin (o pacote global j\u00e1 basta " + dash + " sem path local):")
+    .replace("Optional: `MCP_GRAPHIFY_GRAPH_JSON` with an absolute path. If omitted or empty, auto-discovery walks up to the git root and loads `graphify-out/graph.json`.",
+      "Opcional: `MCP_GRAPHIFY_GRAPH_JSON` com caminho absoluto. Se omitido ou vazio, auto-discovery sobe at\u00e9 a raiz git e carrega `graphify-out/graph.json`.")
+    .replace("### Local memory only (recommended)", "### S\u00f3 mem\u00f3ria local (recomendado)")
+    .replace("No environment variables required. Database:", "Sem vari\u00e1veis de ambiente. Banco:")
+    .replace("### With Graphify", "### Com Graphify")
+    .replace("### Semantic consolidator (optional)", "### Consolidador sem\u00e2ntico (opcional)")
+    .replace("`MCP_PRIMARY_*` / `MCP_FALLBACK_*` enable LLM merge when idle. Without a provider, hash and Jaccard deduplication still run.",
+      "`MCP_PRIMARY_*` / `MCP_FALLBACK_*` habilitam merge via LLM quando ocioso. Sem provider, deduplica\u00e7\u00e3o por hash e Jaccard continuam.")
+    .replace("### Development (contributors)", "### Desenvolvimento (contribuidores)")
+    .replace("Point MCP to `node /path/to/my-local-storage-mcp/dist/index.js`. Monorepo Graphify: `MCP_PLUGINS=graphify` (loader resolves `packages/plugin-graphify/dist` automatically).",
+      "Aponte o MCP para `node /caminho/para/my-local-storage-mcp/dist/index.js`. Graphify no monorepo: `MCP_PLUGINS=graphify` (loader resolve `packages/plugin-graphify/dist` automaticamente).")
+    .replace("**v1.5.4** " + dash + " OSS core decoupled from commercial products \u00b7 `validateRemember` plugin hook \u00b7 Graphify on npm via release \u00b7 simplified install",
+      "**v1.5.4** " + dash + " core OSS desacoplado de produtos comerciais \u00b7 hook `validateRemember` em plugins \u00b7 Graphify no npm via release \u00b7 instala\u00e7\u00e3o simplificada")
+    .replace("**v1.5.3** " + dash + " `context` / `visibility` / `analyst_id` fields (commercial validation moved to add-ons in 1.5.4)",
+      "**v1.5.3** " + dash + " campos `context` / `visibility` / `analyst_id` (valida\u00e7\u00e3o comercial movida para add-ons em 1.5.4)")
     .replace("## Plugins (optional)", "## Plugins (opcionais)")
     .replace("The core stays KISS. Optional add-ons extend the server without changing default behavior.",
       "O core permanece KISS. Add-ons opcionais estendem o servidor sem alterar o comportamento padr\u00e3o.")
@@ -23,8 +50,8 @@ function translateToPt(enBody) {
     .replace("**v1.5.2** ${dash} plugin architecture \u00b7 Graphify add-on (optional)",
       "**v1.5.2** ${dash} arquitetura de plugins \u00b7 add-on Graphify (opcional)")
     .replace("## Quick start", "## In\u00edcio r\u00e1pido")
-    .replace("Requires **Node.js 20+**. After install, use the `my-local-storage-mcp` command in your MCP client.",
-      "Requer **Node.js 20+**. Ap\u00f3s instalar, use o comando `my-local-storage-mcp` no cliente MCP.")
+    .replace("Requires **Node.js 20+**. Use the `my-local-storage-mcp` command in `mcp.json` (see below).",
+      "Requer **Node.js 20+**. Use o comando `my-local-storage-mcp` no `mcp.json` (veja abaixo).")
     .replace("## Prompts that prioritize the MCP", "## Prompts que priorizam o MCP")
     .replace("The agent invokes MCP tools only when the request makes the intent clear. Use explicit phrases to maximize recall and avoid missed saves:",
       "O agente s\u00f3 chama ferramentas MCP quando o pedido deixa a inten\u00e7\u00e3o clara. Use frases expl\u00edcitas para maximizar recall e evitar grava\u00e7\u00f5es perdidas:")
@@ -131,15 +158,23 @@ function translateToPt(enBody) {
 
 const bodyEn = `A [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for persistent local memory. Lets agents (Cursor, Claude Desktop, etc.) store and retrieve business-rule nuances, architectural decisions, and domain knowledge without bloating the conversation context.
 
-Built with **Node.js**, **TypeScript**, and **SQLite** \u00b7 Database: \`~/.local_mcp_learning.db\` \u00b7 **Version \`1.5.0\`**
+Built with **Node.js**, **TypeScript**, and **SQLite** \u00b7 Database: \`~/.local_mcp_learning.db\` \u00b7 **Version \`1.5.4\`**
 
 ## Quick start
+
+Minimal install (local memory only ${dash} works offline after install):
 
 \`\`\`bash
 npm install -g my-local-storage-mcp
 \`\`\`
 
-Requires **Node.js 20+**. After install, use the \`my-local-storage-mcp\` command in your MCP client.
+Requires **Node.js 20+**. Use the \`my-local-storage-mcp\` command in \`mcp.json\` (see below).
+
+**With Graphify** (code graph, separate npm package):
+
+\`\`\`bash
+npm install -g my-local-storage-mcp @avm/my-local-storage-mcp-graphify
+\`\`\`
 
 ## Design principles
 
@@ -152,24 +187,35 @@ Requires **Node.js 20+**. After install, use the \`my-local-storage-mcp\` comman
 
 ## Plugins (optional)
 
-The core stays KISS. Optional add-ons extend the server without changing default behavior.
+The **open-source core** provides local memory only (\`remember_fact\`, \`recall_facts\`, \`recall_by_topic\`). Add-ons are separate npm packages, enabled via \`MCP_PLUGINS\`. A missing or failing add-on **does not block** the core.
+
+Commercial derivatives (e.g. team sync) live outside this repo and are not required for local use.
 
 ### Graphify add-on (\`@avm/my-local-storage-mcp-graphify\`)
 
-Queries a [Graphify](https://github.com/safishamsi/graphify) \`graph.json\` and enriches recall with structural code context.
+Queries a [Graphify](https://github.com/safishamsi/graphify) \`graph.json\` and enriches recall with structural code context. Published to npm with core releases.
 
 \`\`\`bash
 npm install -g @avm/my-local-storage-mcp-graphify
 \`\`\`
 
+In \`mcp.json\`, enable the plugin (global npm install is enough ${dash} no local path):
+
 \`\`\`json
-"env": {
-  "MCP_PLUGINS": "graphify",
-  "MCP_GRAPHIFY_GRAPH_JSON": ""
+{
+  "mcpServers": {
+    "my-local-storage-mcp": {
+      "command": "my-local-storage-mcp",
+      "args": [],
+      "env": {
+        "MCP_PLUGINS": "graphify"
+      }
+    }
+  }
 }
 \`\`\`
 
-Leave \`MCP_GRAPHIFY_GRAPH_JSON\` empty for auto-discovery: walks up to the git root and loads \`graphify-out/graph.json\`.
+Optional: \`MCP_GRAPHIFY_GRAPH_JSON\` with an absolute path. If omitted or empty, auto-discovery walks up to the git root and loads \`graphify-out/graph.json\`.
 
 **Tools (when graph is found):** \`graph_query\`, \`graph_neighbors\`, \`recall_with_graph\`
 
@@ -191,21 +237,30 @@ The agent invokes MCP tools only when the request makes the intent clear. Use ex
 <details>
 <summary><strong>Installation &amp; Cursor setup</strong></summary>
 
-### From npm (recommended)
+### Local memory only (recommended)
 
 \`\`\`bash
 npm install -g my-local-storage-mcp
 \`\`\`
 
-### From Git (development)
-
-\`\`\`bash
-npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
+\`\`\`json
+{
+  "mcpServers": {
+    "my-local-storage-mcp": {
+      "command": "my-local-storage-mcp",
+      "args": []
+    }
+  }
+}
 \`\`\`
 
-Or clone the repo, run \`npm install\`, and point your MCP client to \`dist/index.js\`.
+No environment variables required. Database: \`~/.local_mcp_learning.db\`.
 
-### Cursor (\`mcp.json\`)
+### With Graphify
+
+\`\`\`bash
+npm install -g my-local-storage-mcp @avm/my-local-storage-mcp-graphify
+\`\`\`
 
 \`\`\`json
 {
@@ -214,19 +269,25 @@ Or clone the repo, run \`npm install\`, and point your MCP client to \`dist/inde
       "command": "my-local-storage-mcp",
       "args": [],
       "env": {
-        "MCP_PRIMARY_HOST": "http://127.0.0.1:8080",
-        "MCP_PRIMARY_MODEL": "qwen2.5-1.5b",
-        "MCP_PRIMARY_PROVIDER": "openai",
-        "MCP_FALLBACK_HOST": "http://127.0.0.1:11434",
-        "MCP_FALLBACK_MODEL": "qwen2.5:3b",
-        "MCP_FALLBACK_PROVIDER": "ollama"
+        "MCP_PLUGINS": "graphify"
       }
     }
   }
 }
 \`\`\`
 
-Consolidator env vars are optional. Without an AI provider, semantic merge is disabled (hash and Jaccard deduplication still work).
+### Semantic consolidator (optional)
+
+\`MCP_PRIMARY_*\` / \`MCP_FALLBACK_*\` enable LLM merge when idle. Without a provider, hash and Jaccard deduplication still run.
+
+### Development (contributors)
+
+\`\`\`bash
+git clone https://github.com/avm-sistemas/my-local-storage-mcp.git
+cd my-local-storage-mcp && npm ci && npm run build
+\`\`\`
+
+Point MCP to \`node /path/to/my-local-storage-mcp/dist/index.js\`. Monorepo Graphify: \`MCP_PLUGINS=graphify\` (loader resolves \`packages/plugin-graphify/dist\` automatically).
 
 </details>
 
@@ -369,7 +430,11 @@ On startup, fills \`fact_hash\` for legacy records missing a hash. On collision,
 <details>
 <summary><strong>Changelog</strong></summary>
 
-**v1.5.0** ${dash} plugin architecture \u00b7 Graphify add-on (optional)
+**v1.5.4** ${dash} OSS core decoupled from commercial products \u00b7 \`validateRemember\` plugin hook \u00b7 Graphify on npm via release \u00b7 simplified install
+
+**v1.5.3** ${dash} \`context\` / \`visibility\` / \`analyst_id\` fields (commercial validation moved to add-ons in 1.5.4)
+
+**v1.5.2** ${dash} plugin architecture \u00b7 Graphify add-on (optional)
 
 **v1.4.1** ${dash} \`fact_hash\` backfill \u00b7 full legacy deduplication
 
@@ -388,8 +453,19 @@ const bodyPt = translateToPt(bodyEn);
 const header = `# Local Storage MCP Server
 <img width="1280" height="632" alt="my-local-storage-mcp" src="https://github.com/user-attachments/assets/cfeb0571-957a-4e4c-ae75-5f0ee3a9e121" />
 
-[![Build](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/my-local-storage-mcp.svg)](https://www.npmjs.com/package/my-local-storage-mcp)
+<br>
+<br>
+[![Build](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml)
+<br>
+[![CodeQL](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/github-code-scanning/codeql)
+<br>
+[![Publish npm](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/publish-npm.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/publish-npm.yml)
+<br>
+[![Deploy GitHub Pages](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/pages.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/pages.yml)
+<br>
+[![npm graphify](https://img.shields.io/npm/v/@avm/my-local-storage-mcp-graphify.svg?label=graphify)](https://www.npmjs.com/package/@avm/my-local-storage-mcp-graphify)
+
 `;
 
 const readme = `${header}

@@ -3,21 +3,31 @@
 
 [![Build](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/build.yml)
 [![npm version](https://img.shields.io/npm/v/my-local-storage-mcp.svg)](https://www.npmjs.com/package/my-local-storage-mcp)
+[![npm graphify](https://img.shields.io/npm/v/@avm/my-local-storage-mcp-graphify.svg?label=graphify)](https://www.npmjs.com/package/@avm/my-local-storage-mcp-graphify)
 
 <details>
 <summary><strong>Português (BR)</strong></summary>
 
 Servidor [Model Context Protocol (MCP)](https://modelcontextprotocol.io) para memória persistente local. Permite que agentes (Cursor, Claude Desktop, etc.) gravem e recuperem nuances de regras de negócio, decisões arquiteturais e conhecimento de domínio — sem inflar o contexto da conversa.
 
-Construído com **Node.js**, **TypeScript** e **SQLite** · Banco: `~/.local_mcp_learning.db` · **Vers�o `1.5.4`**
+Construído com **Node.js**, **TypeScript** e **SQLite** · Banco: `~/.local_mcp_learning.db` · **Vers�o `1.5.4`**
 
 ## Início rápido
+
+Instalação mínima (só memória local — funciona offline após o install):
 
 ```bash
 npm install -g my-local-storage-mcp
 ```
 
-Requer **Node.js 20+**. Após instalar, use o comando `my-local-storage-mcp` no cliente MCP.
+Requer **Node.js 20+**. Use o comando `my-local-storage-mcp` no `mcp.json` (veja abaixo).
+
+**Com Graphify** (grafo de código, pacote npm separado):
+
+```bash
+npm install -g my-local-storage-mcp @avm/my-local-storage-mcp-graphify
+```
+
 
 ## Princípios de design
 
@@ -30,24 +40,36 @@ Requer **Node.js 20+**. Após instalar, use o comando `my-local-storage-mcp` no 
 
 ## Plugins (opcionais)
 
-O core permanece KISS. Add-ons opcionais estendem o servidor sem alterar o comportamento padrão.
+O **core open source** inclui apenas memória local (`remember_fact`, `recall_facts`, `recall_by_topic`). Add-ons são pacotes npm separados, ativados com `MCP_PLUGINS`. Falha ou ausência de um add-on **não impede** o core.
+
+Produtos comerciais derivados (ex.: sync em equipe) ficam fora deste repositório e não são necessários para uso local.
+
 
 ### Graphify add-on (`@avm/my-local-storage-mcp-graphify`)
 
-Consulta um `graph.json` do [Graphify](https://github.com/safishamsi/graphify) e enriquece o recall com contexto estrutural do código.
+Consulta um `graph.json` do [Graphify](https://github.com/safishamsi/graphify) e enriquece o recall com contexto estrutural do código. Publicado no npm junto com releases do core.
 
 ```bash
 npm install -g @avm/my-local-storage-mcp-graphify
 ```
 
+No `mcp.json`, ative o plugin (o pacote global já basta — sem path local):
+
 ```json
-"env": {
-  "MCP_PLUGINS": "graphify",
-  "MCP_GRAPHIFY_GRAPH_JSON": ""
+{
+  "mcpServers": {
+    "my-local-storage-mcp": {
+      "command": "my-local-storage-mcp",
+      "args": [],
+      "env": {
+        "MCP_PLUGINS": "graphify"
+      }
+    }
+  }
 }
 ```
 
-Deixe `MCP_GRAPHIFY_GRAPH_JSON` vazio para auto-discovery: sobe até a raiz git e carrega `graphify-out/graph.json`.
+Opcional: `MCP_GRAPHIFY_GRAPH_JSON` com caminho absoluto. Se omitido ou vazio, auto-discovery sobe até a raiz git e carrega `graphify-out/graph.json`.
 
 **Ferramentas (quando o grafo existe):** `graph_query`, `graph_neighbors`, `recall_with_graph`
 
@@ -69,21 +91,30 @@ O agente só chama ferramentas MCP quando o pedido deixa a intenção clara. Use
 <details>
 <summary><strong>Instalação e configuração no Cursor</strong></summary>
 
-### Via npm (recomendado)
+### Só memória local (recomendado)
 
 ```bash
 npm install -g my-local-storage-mcp
 ```
 
-### Via Git (desenvolvimento)
-
-```bash
-npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
+```json
+{
+  "mcpServers": {
+    "my-local-storage-mcp": {
+      "command": "my-local-storage-mcp",
+      "args": []
+    }
+  }
+}
 ```
 
-Ou clone o repositório, rode `npm install`, e aponte o MCP para `dist/index.js`.
+Nenhuma variável de ambiente é obrigatória. Banco: `~/.local_mcp_learning.db`.
 
-### Cursor (`mcp.json`)
+### Com Graphify
+
+```bash
+npm install -g my-local-storage-mcp @avm/my-local-storage-mcp-graphify
+```
 
 ```json
 {
@@ -92,19 +123,25 @@ Ou clone o repositório, rode `npm install`, e aponte o MCP para `dist/index.js`
       "command": "my-local-storage-mcp",
       "args": [],
       "env": {
-        "MCP_PRIMARY_HOST": "http://127.0.0.1:8080",
-        "MCP_PRIMARY_MODEL": "qwen2.5-1.5b",
-        "MCP_PRIMARY_PROVIDER": "openai",
-        "MCP_FALLBACK_HOST": "http://127.0.0.1:11434",
-        "MCP_FALLBACK_MODEL": "qwen2.5:3b",
-        "MCP_FALLBACK_PROVIDER": "ollama"
+        "MCP_PLUGINS": "graphify"
       }
     }
   }
 }
 ```
 
-Variáveis do consolidador são opcionais. Sem provider AI, o merge semântico fica desabilitado (deduplicação por hash e Jaccard continuam).
+### Consolidador semântico (opcional)
+
+Variáveis `MCP_PRIMARY_*` / `MCP_FALLBACK_*` ligam merge via LLM local. Sem provider, deduplicação por hash e Jaccard continuam.
+
+### Desenvolvimento (contribuidores)
+
+```bash
+git clone https://github.com/avm-sistemas/my-local-storage-mcp.git
+cd my-local-storage-mcp && npm ci && npm run build
+```
+
+Aponte o MCP para `node /caminho/para/my-local-storage-mcp/dist/index.js`. Graphify no monorepo: `MCP_PLUGINS=graphify` (loader usa `packages/plugin-graphify/dist` automaticamente).
 
 </details>
 
@@ -247,7 +284,9 @@ Na inicialização, preenche `fact_hash` em registros legados sem hash. On colli
 <details>
 <summary><strong>Changelog</strong></summary>
 
-**v1.5.3** — Teams plugin loader (add-on) · visibility personal/team · analyst license validation · context scope
+**v1.5.4** — core OSS desacoplado de produtos comerciais · hook `validateRemember` para add-ons · Graphify no npm via release · instalação simplificada
+
+**v1.5.3** — campos `context` / `visibility` / `analyst_id` (validação comercial movida para add-ons em 1.5.4)
 
 **v1.5.2** — plugin architecture · Graphify add-on (optional)
 
@@ -275,11 +314,20 @@ Built with **Node.js**, **TypeScript**, and **SQLite** · Database: `~/.local_mc
 
 ## Quick start
 
+Minimal install (local memory only ? works offline after install):
+
 ```bash
 npm install -g my-local-storage-mcp
 ```
 
-Requires **Node.js 20+**. After install, use the `my-local-storage-mcp` command in your MCP client.
+Requires **Node.js 20+**. Use the `my-local-storage-mcp` command in `mcp.json` (see below).
+
+**With Graphify** (code graph, separate npm package):
+
+```bash
+npm install -g my-local-storage-mcp @avm/my-local-storage-mcp-graphify
+```
+
 
 ## Design principles
 
@@ -292,24 +340,36 @@ Requires **Node.js 20+**. After install, use the `my-local-storage-mcp` command 
 
 ## Plugins (optional)
 
-The core stays KISS. Optional add-ons extend the server without changing default behavior.
+The **open-source core** provides local memory only (`remember_fact`, `recall_facts`, `recall_by_topic`). Add-ons are separate npm packages, enabled via `MCP_PLUGINS`. A missing or failing add-on **does not block** the core.
+
+Commercial derivatives (e.g. team sync) live outside this repo and are not required for local use.
+
 
 ### Graphify add-on (`@avm/my-local-storage-mcp-graphify`)
 
-Queries a [Graphify](https://github.com/safishamsi/graphify) `graph.json` and enriches recall with structural code context.
+Queries a [Graphify](https://github.com/safishamsi/graphify) `graph.json` and enriches recall with structural code context. Published to npm with core releases.
 
 ```bash
 npm install -g @avm/my-local-storage-mcp-graphify
 ```
 
+In `mcp.json`, enable the plugin (global npm install is enough ? no local path):
+
 ```json
-"env": {
-  "MCP_PLUGINS": "graphify",
-  "MCP_GRAPHIFY_GRAPH_JSON": ""
+{
+  "mcpServers": {
+    "my-local-storage-mcp": {
+      "command": "my-local-storage-mcp",
+      "args": [],
+      "env": {
+        "MCP_PLUGINS": "graphify"
+      }
+    }
+  }
 }
 ```
 
-Leave `MCP_GRAPHIFY_GRAPH_JSON` empty for auto-discovery: walks up to the git root and loads `graphify-out/graph.json`.
+Optional: `MCP_GRAPHIFY_GRAPH_JSON` with an absolute path. If omitted or empty, auto-discovery walks up to the git root and loads `graphify-out/graph.json`.
 
 **Tools (when graph is found):** `graph_query`, `graph_neighbors`, `recall_with_graph`
 
@@ -331,21 +391,30 @@ The agent invokes MCP tools only when the request makes the intent clear. Use ex
 <details>
 <summary><strong>Installation &amp; Cursor setup</strong></summary>
 
-### From npm (recommended)
+### Local memory only (recommended)
 
 ```bash
 npm install -g my-local-storage-mcp
 ```
 
-### From Git (development)
-
-```bash
-npm install -g git+https://github.com/avm-sistemas/my-local-storage-mcp.git
+```json
+{
+  "mcpServers": {
+    "my-local-storage-mcp": {
+      "command": "my-local-storage-mcp",
+      "args": []
+    }
+  }
+}
 ```
 
-Or clone the repo, run `npm install`, and point your MCP client to `dist/index.js`.
+No environment variables required. Database: `~/.local_mcp_learning.db`.
 
-### Cursor (`mcp.json`)
+### With Graphify
+
+```bash
+npm install -g my-local-storage-mcp @avm/my-local-storage-mcp-graphify
+```
 
 ```json
 {
@@ -354,19 +423,25 @@ Or clone the repo, run `npm install`, and point your MCP client to `dist/index.j
       "command": "my-local-storage-mcp",
       "args": [],
       "env": {
-        "MCP_PRIMARY_HOST": "http://127.0.0.1:8080",
-        "MCP_PRIMARY_MODEL": "qwen2.5-1.5b",
-        "MCP_PRIMARY_PROVIDER": "openai",
-        "MCP_FALLBACK_HOST": "http://127.0.0.1:11434",
-        "MCP_FALLBACK_MODEL": "qwen2.5:3b",
-        "MCP_FALLBACK_PROVIDER": "ollama"
+        "MCP_PLUGINS": "graphify"
       }
     }
   }
 }
 ```
 
-Consolidator env vars are optional. Without an AI provider, semantic merge is disabled (hash and Jaccard deduplication still work).
+### Semantic consolidator (optional)
+
+`MCP_PRIMARY_*` / `MCP_FALLBACK_*` enable LLM merge when idle. Without a provider, hash and Jaccard deduplication still run.
+
+### Development (contributors)
+
+```bash
+git clone https://github.com/avm-sistemas/my-local-storage-mcp.git
+cd my-local-storage-mcp && npm ci && npm run build
+```
+
+Point MCP to `node /path/to/my-local-storage-mcp/dist/index.js`. Monorepo Graphify: `MCP_PLUGINS=graphify` (loader resolves `packages/plugin-graphify/dist` automatically).
 
 </details>
 
@@ -509,11 +584,13 @@ On startup, fills `fact_hash` for legacy records missing a hash. On collision, t
 <details>
 <summary><strong>Changelog</strong></summary>
 
-**v1.5.3** — Teams plugin loader (add-on) · visibility personal/team · analyst license validation · context scope
+**v1.5.4** ? OSS core decoupled from commercial products � `validateRemember` plugin hook � Graphify on npm via release � simplified install
 
-**v1.5.2** — plugin architecture · Graphify add-on (optional)
+**v1.5.3** ? `context` / `visibility` / `analyst_id` fields (commercial validation moved to add-ons in 1.5.4)
 
-**v1.4.1** — `fact_hash` backfill · full legacy deduplication
+**v1.5.2** ? plugin architecture � Graphify add-on (optional)
+
+**v1.4.1** ? `fact_hash` backfill � full legacy deduplication
 
 **v1.4.0** — `format=compact` · `recall_by_topic` · access counters · checkpoint
 

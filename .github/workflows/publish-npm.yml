@@ -44,7 +44,7 @@ jobs:
       - name: Build
         run: |
           npm run build
-          npm run build -w @avm/my-local-storage-mcp-graphify
+          npm run build -w my-local-storage-mcp-graphify
 
       - name: Verify package
         run: |
@@ -53,7 +53,7 @@ jobs:
           node --check dist/index.js
           node --check packages/plugin-graphify/dist/index.js
           npm pack --dry-run
-          npm pack --dry-run -w @avm/my-local-storage-mcp-graphify
+          npm pack --dry-run -w my-local-storage-mcp-graphify
 
       - name: Check NPM_TOKEN secret
         env:
@@ -69,10 +69,19 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "false"
-        run: npm publish --access public
+        run: |
+          npm publish --access public || {
+            code=$?
+            ver=$(node -p "require('./package.json').version")
+            if npm view "my-local-storage-mcp@${ver}" version >/dev/null 2>&1; then
+              echo "Core ${ver} already on npm, skipping."
+              exit 0
+            fi
+            exit $code
+          }
 
       - name: Publish Graphify add-on
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: "false"
-        run: npm publish --access public -w @avm/my-local-storage-mcp-graphify
+        run: npm publish --access public -w my-local-storage-mcp-graphify

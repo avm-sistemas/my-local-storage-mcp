@@ -12,7 +12,7 @@
 <br>
 [![Deploy GitHub Pages](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/pages.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/pages.yml)
 <br>
-[![npm graphify](https://img.shields.io/npm/v/@avm/my-local-storage-mcp-graphify.svg?label=graphify)](https://www.npmjs.com/package/@avm/my-local-storage-mcp-graphify)
+[![npm graphify](https://img.shields.io/npm/v/my-local-storage-mcp-graphify.svg?label=graphify)](https://www.npmjs.com/package/my-local-storage-mcp-graphify)
 
 
 <details>
@@ -35,7 +35,7 @@ Requer **Node.js 20+**. Use o comando `my-local-storage-mcp` no `mcp.json` (veja
 **Com Graphify** (grafo de código, pacote npm separado):
 
 ```bash
-npm install -g my-local-storage-mcp @avm/my-local-storage-mcp-graphify
+npm install -g my-local-storage-mcp my-local-storage-mcp-graphify
 ```
 
 ## Princípios de design
@@ -53,12 +53,12 @@ O **core open source** inclui apenas memória local (`remember_fact`, `recall_fa
 
 Produtos comerciais derivados (ex.: sync em equipe) ficam fora deste repositório e não são necessários para uso local.
 
-### Graphify add-on (`@avm/my-local-storage-mcp-graphify`)
+### Graphify add-on (`my-local-storage-mcp-graphify`)
 
 Consulta um `graph.json` do [Graphify](https://github.com/safishamsi/graphify) e enriquece o recall com contexto estrutural do código. Publicado no npm junto com releases do core.
 
 ```bash
-npm install -g @avm/my-local-storage-mcp-graphify
+npm install -g my-local-storage-mcp-graphify
 ```
 
 No `mcp.json`, ative o plugin (o pacote global já basta — sem path local):
@@ -121,7 +121,7 @@ Sem variáveis de ambiente. Banco: `~/.local_mcp_learning.db`.
 ### Com Graphify
 
 ```bash
-npm install -g my-local-storage-mcp @avm/my-local-storage-mcp-graphify
+npm install -g my-local-storage-mcp my-local-storage-mcp-graphify
 ```
 
 ```json
@@ -333,7 +333,7 @@ Requires **Node.js 20+**. Use the `my-local-storage-mcp` command in `mcp.json` (
 **With Graphify** (code graph, separate npm package):
 
 ```bash
-npm install -g my-local-storage-mcp @avm/my-local-storage-mcp-graphify
+npm install -g my-local-storage-mcp my-local-storage-mcp-graphify
 ```
 
 ## Design principles
@@ -351,12 +351,12 @@ The **open-source core** provides local memory only (`remember_fact`, `recall_fa
 
 Commercial derivatives (e.g. team sync) live outside this repo and are not required for local use.
 
-### Graphify add-on (`@avm/my-local-storage-mcp-graphify`)
+### Graphify add-on (`my-local-storage-mcp-graphify`)
 
 Queries a [Graphify](https://github.com/safishamsi/graphify) `graph.json` and enriches recall with structural code context. Published to npm with core releases.
 
 ```bash
-npm install -g @avm/my-local-storage-mcp-graphify
+npm install -g my-local-storage-mcp-graphify
 ```
 
 In `mcp.json`, enable the plugin (global npm install is enough — no local path):
@@ -419,7 +419,7 @@ No environment variables required. Database: `~/.local_mcp_learning.db`.
 ### With Graphify
 
 ```bash
-npm install -g my-local-storage-mcp @avm/my-local-storage-mcp-graphify
+npm install -g my-local-storage-mcp my-local-storage-mcp-graphify
 ```
 
 ```json

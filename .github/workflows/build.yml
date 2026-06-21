@@ -32,7 +32,7 @@ jobs:
       - name: Build
         run: |
           npm run build
-          npm run build -w @avm/my-local-storage-mcp-graphify
+          npm run build -w my-local-storage-mcp-graphify
 
       - name: Verify output
         run: |

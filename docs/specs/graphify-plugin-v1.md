@@ -2,7 +2,7 @@
 
 **Status:** Aprovado  
 **Data:** 2026-06-09  
-**Versão alvo:** `my-local-storage-mcp@1.5.4` + `@avm/my-local-storage-mcp-graphify@1.0.0`  
+**Versão alvo:** `my-local-storage-mcp@1.5.4` + `my-local-storage-mcp-graphify@1.0.0`  
 **Princípio:** KISS ? core inalterado sem plugin; um grafo ativo por sessão.
 
 ---
@@ -14,7 +14,7 @@ Com downloads crescentes no [npm](https://www.npmjs.com/package/my-local-storage
 | Pacote | Versão | Motivo |
 |---|---|---|
 | `my-local-storage-mcp` | **1.5.0** (minor) | Plugin loader + interface `McpPlugin` são aditivos; tools core inalteradas; zero breaking para quem já usa 1.4.x |
-| `@avm/my-local-storage-mcp-graphify` | **1.0.0** (major do add-on) | Primeiro plugin estável do ecossistema ? marco público separado do core |
+| `my-local-storage-mcp-graphify` | **1.0.0** (major do add-on) | Primeiro plugin estável do ecossistema ? marco público separado do core |
 | `my-local-storage-mcp` | **2.0.0** (reservado) | Só quando houver breaking real: rename/remoção de tools, schema SQLite intrusivo, mudança de defaults |
 
 **Regra:** não inflar o core para `2.0.0` por marketing. O salto visível é o add-on `1.0.0`, não o minor do core.
@@ -68,7 +68,7 @@ my-local-storage-mcp/                 # npm: my-local-storage-mcp (core)
     plugin-types.ts                 # interface McpPlugin (novo)
     plugin-loader.ts                # carrega plugins por env (novo)
   packages/
-    plugin-graphify/                # npm: @avm/my-local-storage-mcp-graphify
+    plugin-graphify/                # npm: my-local-storage-mcp-graphify
       package.json
       src/
         index.ts                    # export default plugin
@@ -84,7 +84,7 @@ Instala��o (npm global ? recomendado):
 
 ```bash
 npm install -g my-local-storage-mcp
-npm install -g @avm/my-local-storage-mcp-graphify
+npm install -g my-local-storage-mcp-graphify
 ```
 
 Add-on opcional via `MCP_{NOME}_PLUGIN_PATH` apenas para desenvolvimento de plugins ainda n�o publicados.
@@ -186,7 +186,7 @@ export interface McpPlugin {
 ```
 1. Ler MCP_PLUGINS (split por vírgula, trim)
 2. Para cada nome:
-     graphify ? import dinâmico de '@avm/my-local-storage-mcp-graphify'
+     graphify ? import dinâmico de 'my-local-storage-mcp-graphify'
                 fallback: './packages/plugin-graphify/dist/index.js' (dev local)
 3. Chamar plugin.init(process.env)
 4. Agregar getTools() de plugins ativos

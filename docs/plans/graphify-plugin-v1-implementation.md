@@ -2,13 +2,13 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Entregar add-on `@avm/my-local-storage-mcp-graphify` que enriquece o MCP core com consultas ao `graph.json` do Graphify, ativado por env, com auto-discovery A2 e zero regressão sem plugin.
+**Goal:** Entregar add-on `my-local-storage-mcp-graphify` que enriquece o MCP core com consultas ao `graph.json` do Graphify, ativado por env, com auto-discovery A2 e zero regressão sem plugin.
 
 **Architecture:** Interface `McpPlugin` no core + loader dinâmico; pacote separado implementa loader de NetworkX node-link JSON, índice em memória e 3 tools MCP. Core delega tools desconhecidas aos plugins e chama `afterRecall` opcionalmente.
 
 **Tech Stack:** Node.js 20+, TypeScript, ESM, `@modelcontextprotocol/sdk`, sem dependências Python.
 
-**Versioning:** core `1.5.0` (minor, compatível com 1.4.x) + plugin `@avm/my-local-storage-mcp-graphify@1.0.0` (primeiro add-on estável). Reservar core `2.0.0` para breaking changes reais. Ver spec §0.
+**Versioning:** core `1.5.0` (minor, compatível com 1.4.x) + plugin `my-local-storage-mcp-graphify@1.0.0` (primeiro add-on estável). Reservar core `2.0.0` para breaking changes reais. Ver spec §0.
 
 **Spec:** [docs/specs/graphify-plugin-v1.md](../specs/graphify-plugin-v1.md)
 
@@ -44,7 +44,7 @@
 - [ ] **Step 2:** Criar `plugin-loader.ts` com:
   - `loadPlugins(env): Promise<McpPlugin[]>`
   - parse `MCP_PLUGINS` (split `,`, trim, ignorar vazio)
-  - import dinâmico `graphify` ? `@avm/my-local-storage-mcp-graphify`, catch ? log stderr
+  - import dinâmico `graphify` ? `my-local-storage-mcp-graphify`, catch ? log stderr
   - `init()` em cada plugin; manter só os que retornam `true`
   - `getAllPluginTools(plugins)` agregador
   - `dispatchPluginTool(plugins, name, args)` delegador
@@ -93,7 +93,7 @@
 - Create: `packages/plugin-graphify/src/index.ts` (stub)
 
 - [ ] **Step 1:** `package.json` do plugin:
-  - `name`: `@avm/my-local-storage-mcp-graphify`
+  - `name`: `my-local-storage-mcp-graphify`
   - `version`: `1.0.0`
   - `type`: `module`
   - `main` / `exports`: `./dist/index.js`
@@ -245,7 +245,7 @@
 ## Task 10: Publicação (quando usuário autorizar)
 
 - [ ] Publicar `my-local-storage-mcp@1.5.0` (core ? changelog: plugin architecture, sem breaking).
-- [ ] Publicar `@avm/my-local-storage-mcp-graphify@1.0.0` (add-on ? requer scope `@avm` ou nome alternativo disponível).
+- [ ] Publicar `my-local-storage-mcp-graphify@1.0.0` (add-on ? requer scope `@avm` ou nome alternativo disponível).
 - [ ] Tags git: `v1.5.0` (core) + `plugin-graphify-v1.0.0` (ou monorepo tag única documentada no release notes).
 
 ---

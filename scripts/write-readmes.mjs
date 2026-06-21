@@ -173,7 +173,7 @@ Requires **Node.js 20+**. Use the \`my-local-storage-mcp\` command in \`mcp.json
 **With Graphify** (code graph, separate npm package):
 
 \`\`\`bash
-npm install -g my-local-storage-mcp @avm/my-local-storage-mcp-graphify
+npm install -g my-local-storage-mcp my-local-storage-mcp-graphify
 \`\`\`
 
 ## Design principles
@@ -191,12 +191,12 @@ The **open-source core** provides local memory only (\`remember_fact\`, \`recall
 
 Commercial derivatives (e.g. team sync) live outside this repo and are not required for local use.
 
-### Graphify add-on (\`@avm/my-local-storage-mcp-graphify\`)
+### Graphify add-on (\`my-local-storage-mcp-graphify\`)
 
 Queries a [Graphify](https://github.com/safishamsi/graphify) \`graph.json\` and enriches recall with structural code context. Published to npm with core releases.
 
 \`\`\`bash
-npm install -g @avm/my-local-storage-mcp-graphify
+npm install -g my-local-storage-mcp-graphify
 \`\`\`
 
 In \`mcp.json\`, enable the plugin (global npm install is enough ${dash} no local path):
@@ -259,7 +259,7 @@ No environment variables required. Database: \`~/.local_mcp_learning.db\`.
 ### With Graphify
 
 \`\`\`bash
-npm install -g my-local-storage-mcp @avm/my-local-storage-mcp-graphify
+npm install -g my-local-storage-mcp my-local-storage-mcp-graphify
 \`\`\`
 
 \`\`\`json
@@ -464,7 +464,7 @@ const header = `# Local Storage MCP Server
 <br>
 [![Deploy GitHub Pages](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/pages.yml/badge.svg)](https://github.com/avm-sistemas/my-local-storage-mcp/actions/workflows/pages.yml)
 <br>
-[![npm graphify](https://img.shields.io/npm/v/@avm/my-local-storage-mcp-graphify.svg?label=graphify)](https://www.npmjs.com/package/@avm/my-local-storage-mcp-graphify)
+[![npm graphify](https://img.shields.io/npm/v/my-local-storage-mcp-graphify.svg?label=graphify)](https://www.npmjs.com/package/my-local-storage-mcp-graphify)
 
 `;
 

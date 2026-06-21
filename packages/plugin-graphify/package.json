@@ -1,5 +1,5 @@
 {
-  "name": "@avm/my-local-storage-mcp-graphify",
+  "name": "my-local-storage-mcp-graphify",
   "version": "1.0.0",
   "description": "Graphify add-on for my-local-storage-mcp ? query graph.json and enrich recall with structural context.",
   "type": "module",

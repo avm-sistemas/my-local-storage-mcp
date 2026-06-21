@@ -4,7 +4,6 @@ import type { McpPlugin, PluginHostContext, ToolDefinition, McpToolResult } from
 
 const PLUGIN_IMPORTS: Record<string, string[]> = {
   graphify: [
-    "@avm/my-local-storage-mcp-graphify",
     "my-local-storage-mcp-graphify"
   ],
   teams: [

@@ -25,7 +25,7 @@
   "author": "Andre Mesquita",
   "repository": {
     "type": "git",
-    "url": "https://github.com/avm-sistemas/my-local-storage-mcp.git",
+    "url": "git+https://github.com/avm-sistemas/my-local-storage-mcp.git",
     "directory": "packages/plugin-graphify"
   },
   "publishConfig": {

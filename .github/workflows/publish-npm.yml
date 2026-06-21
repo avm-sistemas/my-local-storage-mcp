@@ -1,8 +1,7 @@
 name: Publish npm
 
-# Auth: granular access token with "bypass 2FA for automation" in GitHub secret NPM_TOKEN.
-# Provenance (--provenance) works on release / tag push only. workflow_dispatch publishes without it.
-# Do not "Re-run" a failed release job ? it reuses the old workflow snapshot. Create a new release or push the tag again.
+# Auth: NPM_TOKEN (granular, bypass 2FA). Provenance disabled until Trusted Publisher is configured on npmjs.com.
+# Do not "Re-run" a failed release job ? trigger a fresh run via Actions -> Run workflow (main).
 
 on:
   release:
@@ -14,7 +13,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   publish:
@@ -70,20 +68,11 @@ jobs:
       - name: Publish core
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          echo "event=${{ github.event_name }} ref=${{ github.ref }} checkout_ref=${{ github.event.release.tag_name || github.ref_name }}"
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            npm publish --access public
-          else
-            npm publish --access public --provenance
-          fi
+          NPM_CONFIG_PROVENANCE: "false"
+        run: npm publish --access public
 
       - name: Publish Graphify add-on
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            npm publish --access public -w @avm/my-local-storage-mcp-graphify
-          else
-            npm publish --access public --provenance -w @avm/my-local-storage-mcp-graphify
-          fi
+          NPM_CONFIG_PROVENANCE: "false"
+        run: npm publish --access public -w @avm/my-local-storage-mcp-graphify

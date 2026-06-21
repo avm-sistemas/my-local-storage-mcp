@@ -1,157 +1,89 @@
 name: Publish npm
 
-
-
 # Auth: granular access token with "bypass 2FA for automation" in GitHub secret NPM_TOKEN.
-
-# Trusted Publisher (OIDC) can replace this later; npm does not validate TP config until publish.
+# Provenance (--provenance) works on release / tag push only. workflow_dispatch publishes without it.
+# Do not "Re-run" a failed release job ? it reuses the old workflow snapshot. Create a new release or push the tag again.
 
 on:
-
   release:
-
     types: [published]
-
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
 
-
-
 permissions:
-
   contents: read
-
   id-token: write
 
-
-
 jobs:
-
   publish:
-
     name: Publish to npm registry
-
     runs-on: ubuntu-latest
 
-
-
     steps:
-
       - name: Checkout
-
         uses: actions/checkout@v4
-
         with:
-
-          ref: ${{ github.event.release.tag_name || github.ref }}
-
+          ref: ${{ github.event.release.tag_name || github.ref_name }}
           fetch-depth: 0
 
-
-
       - name: Setup Node.js
-
         uses: actions/setup-node@v5
-
         with:
-
           node-version: 24
-
-
-
-      - name: Upgrade npm
-
-        run: |
-
-          npm install -g npm@11
-
-          node --version
-
-          npm --version
-
-
-
-      - name: Install dependencies
-
-        run: npm ci
-
-
-
-      - name: Build
-
-        run: |
-
-          npm run build
-
-          npm run build -w @avm/my-local-storage-mcp-graphify
-
-
-
-      - name: Verify package
-
-        run: |
-
-          test -f dist/index.js
-
-          test -f packages/plugin-graphify/dist/index.js
-
-          node --check dist/index.js
-
-          node --check packages/plugin-graphify/dist/index.js
-
-          npm pack --dry-run
-
-          npm pack --dry-run -w @avm/my-local-storage-mcp-graphify
-
-
-
-      - name: Check NPM_TOKEN secret
-
-        env:
-
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-        run: |
-
-          if [ -z "$NPM_TOKEN" ]; then
-
-            echo "::error::GitHub secret NPM_TOKEN is missing. Create a granular npm token with bypass 2FA and add it to repo Settings -> Secrets."
-
-            exit 1
-
-          fi
-
-          echo "NPM_TOKEN secret: present"
-
-
-
-      - name: Configure npm registry for publish
-
-        uses: actions/setup-node@v5
-
-        with:
-
-          node-version: 24
-
           registry-url: https://registry.npmjs.org
 
+      - name: Upgrade npm
+        run: |
+          npm install -g npm@11
+          node --version
+          npm --version
 
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: |
+          npm run build
+          npm run build -w @avm/my-local-storage-mcp-graphify
+
+      - name: Verify package
+        run: |
+          test -f dist/index.js
+          test -f packages/plugin-graphify/dist/index.js
+          node --check dist/index.js
+          node --check packages/plugin-graphify/dist/index.js
+          npm pack --dry-run
+          npm pack --dry-run -w @avm/my-local-storage-mcp-graphify
+
+      - name: Check NPM_TOKEN secret
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "::error::GitHub secret NPM_TOKEN is missing. Create a granular npm token with bypass 2FA and add it to repo Settings -> Secrets."
+            exit 1
+          fi
+          echo "NPM_TOKEN secret: present"
 
       - name: Publish core
-
-        run: npm publish --access public --provenance
-
         env:
-
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-
+        run: |
+          echo "event=${{ github.event_name }} ref=${{ github.ref }} checkout_ref=${{ github.event.release.tag_name || github.ref_name }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            npm publish --access public
+          else
+            npm publish --access public --provenance
+          fi
 
       - name: Publish Graphify add-on
-
-        run: npm publish --access public --provenance -w @avm/my-local-storage-mcp-graphify
-
         env:
-
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            npm publish --access public -w @avm/my-local-storage-mcp-graphify
+          else
+            npm publish --access public --provenance -w @avm/my-local-storage-mcp-graphify
+          fi
